@@ -32,10 +32,10 @@ repositories {
 }
 
 dependencies {
-	runtime 'synapticloop:h2zero:2.2.0'
+	runtime 'synapticloop:h2zero:2.2.1'
 	runtime 'synapticloop:routemaster:2.2.1'
 
-	compile 'synapticloop:h2zero:2.2.0'
+	compile 'synapticloop:h2zero:2.2.1'
 	compile 'synapticloop:routemaster:2.2.1'
 
 	testRuntime 'junit:junit:4.12'
@@ -43,10 +43,14 @@ dependencies {
 	testRuntime 'com.github.stefanbirkner:system-rules:1.16.1'
 	testRuntime 'mysql:mysql-connector-java:6.0.6'
 	testRuntime 'org.xerial:sqlite-jdbc:3.21.0.1'
+	testRuntime 'commons-io:commons-io:2.5'
+	testRuntime 'com.mashape.unirest:unirest-java:1.4.9'
 
 	testCompile 'junit:junit:4.12'
 	testCompile 'org.mockito:mockito-all:1.10.19'
 	testCompile 'com.github.stefanbirkner:system-rules:1.16.1'
+	testCompile 'commons-io:commons-io:2.5'
+	testCompile 'com.mashape.unirest:unirest-java:1.4.9'
 }
 
 configurations.all {
@@ -58,7 +62,8 @@ configurations.all {
 					'org.json:json:20180130',
 					'commons-logging:commons-logging:1.2',
 					'commons-collections:commons-collections:3.2.2',
-					'com.github.stefanbirkner:system-rules:1.17.1'
+					'com.github.stefanbirkner:system-rules:1.17.1',
+					'org.apache.httpcomponents:httpclient:4.5.2'
 	}
 }
 

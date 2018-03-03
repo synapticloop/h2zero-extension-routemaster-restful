@@ -1,0 +1,40 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		jcenter()
+		mavenLocal()
+		maven {
+			url "https://plugins.gradle.org/"
+		}
+	}
+
+	dependencies {
+		classpath 'synapticloop:h2zero-extension-routemaster-restful:0.0.1'
+	}
+}
+
+plugins {
+	id 'java'
+	id 'eclipse'
+	id 'synapticloop.h2zero' version '2.2.1'
+}
+
+apply plugin: 'synapticloop.h2zero'
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+	jcenter()
+}
+
+dependencies {
+	runtime 'synapticloop:h2zero:2.2.1'
+
+	compile 'synapticloop:h2zero:2.2.1'
+}
+
+h2zero {
+	inFile = 'src/test/resources/sample-include-sqlite3.h2zero'
+	outDir = '.'
+	verbose = 'false'
+}
