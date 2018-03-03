@@ -8,11 +8,13 @@ import java.io.File;
 import java.sql.SQLException;
 
 import java.util.List;
+import java.sql.Date;
 import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 import synapticloop.h2zero.base.exception.H2ZeroFinderException;
+import synapticloop.h2zero.base.exception.H2ZeroPrimaryKeyException;
 import synapticloop.nanohttpd.utils.HttpUtils;
 import synapticloop.sample.h2zero.sqlite3.deleter.UserDeleter;
 import synapticloop.sample.h2zero.sqlite3.finder.UserFinder;
@@ -67,7 +69,27 @@ public class UserServant extends BaseServant {
 	@Override
 	public Response doPost(File rootDir, IHTTPSession httpSession, Map<String, String> restParams, String unmappedParams) {
 		Map<String, List<String>> parameters = httpSession.getParameters();
-		parameters.		parameters.		parameters.		parameters.		parameters.		parameters.		parameters.		return(HttpUtils.okResponse(APPLICATION_JSON, "{\"primaryKey\": " + "" + "}"));
+		Long primaryKey = null;
+		try {
+			Long idUserType = castLong(getFirstParameter("idUserType", parameters));
+			Boolean flIsAlive = castBoolean(getFirstParameter("flIsAlive", parameters));
+			Integer numAge = castInteger(getFirstParameter("numAge", parameters));
+			String nmUsername = castString(getFirstParameter("nmUsername", parameters));
+			String txtAddressEmail = castString(getFirstParameter("txtAddressEmail", parameters));
+			String txtPassword = castString(getFirstParameter("txtPassword", parameters));
+			Timestamp dtmSignup = castTimestamp(getFirstParameter("dtmSignup", parameters));
+			User user = new User(null, idUserType, flIsAlive, numAge, nmUsername, txtAddressEmail, txtPassword, dtmSignup);
+
+			user.insert();
+			primaryKey = user.getPrimaryKey();
+		} catch (ServantException ex) {
+			return(HttpUtils.badRequestResponse(APPLICATION_JSON, "{\"error\":\"" + ex.getMessage() + "\"}"));
+		} catch (H2ZeroPrimaryKeyException ex) {
+			return(HttpUtils.badRequestResponse(APPLICATION_JSON, "{\"error\":\"" + ex.getMessage() + "\"}"));
+		} catch (SQLException ex) {
+			return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, "{\"error\":\"" + ex.getMessage() + "\"}"));
+		}
+		return(HttpUtils.okResponse(APPLICATION_JSON, "{\"primaryKey\": " + primaryKey + "}"));
 	}
 
 	@Override

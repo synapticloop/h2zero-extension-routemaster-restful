@@ -8,11 +8,13 @@ import java.io.File;
 import java.sql.SQLException;
 
 import java.util.List;
+import java.sql.Date;
 import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 import synapticloop.h2zero.base.exception.H2ZeroFinderException;
+import synapticloop.h2zero.base.exception.H2ZeroPrimaryKeyException;
 import synapticloop.nanohttpd.utils.HttpUtils;
 import synapticloop.sample.h2zero.sqlite3.finder.UserTypeFinder;
 import synapticloop.sample.h2zero.sqlite3.model.UserType;

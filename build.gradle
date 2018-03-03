@@ -33,10 +33,10 @@ repositories {
 
 dependencies {
 	runtime 'synapticloop:h2zero:2.2.1'
-	runtime 'synapticloop:routemaster:2.2.1'
+	runtime 'synapticloop:routemaster:2.3.0'
 
 	compile 'synapticloop:h2zero:2.2.1'
-	compile 'synapticloop:routemaster:2.2.1'
+	compile 'synapticloop:routemaster:2.3.0'
 
 	testRuntime 'junit:junit:4.12'
 	testRuntime 'org.mockito:mockito-all:1.10.19'

@@ -4,12 +4,26 @@ package {database.package}.routemaster.servant;{\n}
 //with the use of synapticloop templar templating language{\n}
 //  (java-create-routemaster-base-rest-servant.templar){\n}
 {\n}
+import java.sql.Date;{\n}
+import java.sql.Timestamp;{\n}
+import java.text.ParseException;{\n}
+import java.text.SimpleDateFormat;{\n}
+{\n}
 import java.util.List;{\n}
 import java.util.Map;{\n}
 {\n}
 import synapticloop.nanohttpd.router.RestRoutable;{\n}
 {\n}
 public abstract class BaseServant extends RestRoutable {{{\n}
+{\t}public class ServantException extends Exception {{{\n}
+{\t}{\t}private static final long serialVersionUID = 2662011709175803257L;{\n}
+{\n}
+{\t}{\t}public ServantException(String message) {{{\n}
+{\t}{\t}{\t}super(message);{\n}
+{\t}{\t}}{\n}
+{\t}}{\n}
+{\n}
+{\t}private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");{\n}
 {\n}
 {\t}public BaseServant(String routeContext, List<String> params) {{{\n}
 {\t}{\t}super(routeContext, params);{\n}
@@ -23,4 +37,81 @@ public abstract class BaseServant extends RestRoutable {{{\n}
 {\n}
 {\t}{\t}return(list.get(0));{\n}
 {\t}}{\n}
+{\n}
+{\t}protected Date castDate(String value) throws ServantException {{{\n}
+{\t}{\t}if(null == value) {{{\n}
+{\t}{\t}{\t}return(null);{\n}
+{\t}{\t}}{\n}
+{\n}
+{\t}{\t}java.util.Date parsed = null;{\n}
+{\t}{\t}try {{{\n}
+{\t}{\t}{\t}parsed = SIMPLE_DATE_FORMAT.parse(value);{\n}
+{\t}{\t}} catch (ParseException ex) {{{\n}
+{\t}{\t}{\t}throw new ServantException(ex.getMessage());{\n}
+{\t}{\t}}{\n}
+{\n}
+{\t}{\t}if(null == parsed) {{{\n}
+{\t}{\t}{\t}return(null);{\n}
+{\t}{\t}}{\n}
+{\n}
+{\t}{\t}return(new Date(parsed.getTime()));{\n}
+{\t}}{\n}
+{\n}
+{\t}protected String castString(String value) throws ServantException {{{\n}
+{\t}{\t}return(value);{\n}
+{\t}}{\n}
+{\n}
+{\t}protected Integer castInteger(String value) throws ServantException {{{\n}
+{\t}{\t}if(null == value) {{{\n}
+{\t}{\t}{\t}return(null);{\n}
+{\t}{\t}}{\n}
+{\t}{\t}try {{{\n}
+{\t}{\t}{\t}return(Integer.valueOf(value));{\n}
+{\t}{\t}} catch(NumberFormatException ex) {{{\n}
+{\t}{\t}{\t}throw new ServantException(ex.getMessage());{\n}
+{\t}{\t}}{\n}
+{\t}}{\n}
+{\n}
+{\t}protected Boolean castBoolean(String value) throws ServantException {{{\n}
+{\t}{\t}if(null == value) {{{\n}
+{\t}{\t}{\t}return(null);{\n}
+{\t}{\t}}{\n}
+{\n}
+{\t}{\t}return(Boolean.valueOf(value));{\n}
+{\t}}{\n}
+{\n}
+{\t}protected Timestamp castTimestamp(String value) throws ServantException {{{\n}
+{\t}{\t}if(null == value) {{{\n}
+{\t}{\t}{\t}return(null);{\n}
+{\t}{\t}}{\n}
+{\n}
+{\t}{\t}try {{{\n}
+{\t}{\t}{\t}return(Timestamp.valueOf(value));{\n}
+{\t}{\t}} catch(IllegalArgumentException ex) {{{\n}
+{\t}{\t}{\t}throw new ServantException(ex.getMessage());{\n}
+{\t}{\t}}{\n}
+{\t}}{\n}
+{\n}
+{\t}protected Long castLong(String value) throws ServantException {{{\n}
+{\t}{\t}if(null == value) {{{\n}
+{\t}{\t}{\t}return(null);{\n}
+{\t}{\t}}{\n}
+{\t}{\t}try {{{\n}
+{\t}{\t}{\t}return(Long.valueOf(value));{\n}
+{\t}{\t}} catch(NumberFormatException ex) {{{\n}
+{\t}{\t}{\t}throw new ServantException(ex.getMessage());{\n}
+{\t}{\t}}{\n}
+{\t}}{\n}
+{\n}
+{\t}protected Float castFloat(String value) throws ServantException {{{\n}
+{\t}{\t}if(null == value) {{{\n}
+{\t}{\t}{\t}return(null);{\n}
+{\t}{\t}}{\n}
+{\t}{\t}try {{{\n}
+{\t}{\t}{\t}return(Float.valueOf(value));{\n}
+{\t}{\t}} catch(NumberFormatException ex) {{{\n}
+{\t}{\t}{\t}throw new ServantException(ex.getMessage());{\n}
+{\t}{\t}}{\n}
+{\t}}{\n}
+{\n}
 }{\n}

@@ -8,11 +8,13 @@ import java.io.File;
 import java.sql.SQLException;
 
 import java.util.List;
+import java.sql.Date;
 import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 import synapticloop.h2zero.base.exception.H2ZeroFinderException;
+import synapticloop.h2zero.base.exception.H2ZeroPrimaryKeyException;
 import synapticloop.nanohttpd.utils.HttpUtils;
 import synapticloop.sample.h2zero.sqlite3.deleter.UserPetDeleter;
 import synapticloop.sample.h2zero.sqlite3.finder.UserPetFinder;
@@ -67,7 +69,22 @@ public class UserPetServant extends BaseServant {
 	@Override
 	public Response doPost(File rootDir, IHTTPSession httpSession, Map<String, String> restParams, String unmappedParams) {
 		Map<String, List<String>> parameters = httpSession.getParameters();
-		parameters.		parameters.		return(HttpUtils.okResponse(APPLICATION_JSON, "{\"primaryKey\": " + "" + "}"));
+		Long primaryKey = null;
+		try {
+			Long idUser = castLong(getFirstParameter("idUser", parameters));
+			Long idPet = castLong(getFirstParameter("idPet", parameters));
+			UserPet userPet = new UserPet(null, idUser, idPet);
+
+			userPet.insert();
+			primaryKey = userPet.getPrimaryKey();
+		} catch (ServantException ex) {
+			return(HttpUtils.badRequestResponse(APPLICATION_JSON, "{\"error\":\"" + ex.getMessage() + "\"}"));
+		} catch (H2ZeroPrimaryKeyException ex) {
+			return(HttpUtils.badRequestResponse(APPLICATION_JSON, "{\"error\":\"" + ex.getMessage() + "\"}"));
+		} catch (SQLException ex) {
+			return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, "{\"error\":\"" + ex.getMessage() + "\"}"));
+		}
+		return(HttpUtils.okResponse(APPLICATION_JSON, "{\"primaryKey\": " + primaryKey + "}"));
 	}
 
 	@Override

@@ -4,12 +4,26 @@ package synapticloop.sample.h2zero.sqlite3.routemaster.servant;
 //with the use of synapticloop templar templating language
 //  (java-create-routemaster-base-rest-servant.templar)
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import java.util.List;
 import java.util.Map;
 
 import synapticloop.nanohttpd.router.RestRoutable;
 
 public abstract class BaseServant extends RestRoutable {
+	public class ServantException extends Exception {
+		private static final long serialVersionUID = 2662011709175803257L;
+
+		public ServantException(String message) {
+			super(message);
+		}
+	}
+
+	private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
 	public BaseServant(String routeContext, List<String> params) {
 		super(routeContext, params);
@@ -23,4 +37,81 @@ public abstract class BaseServant extends RestRoutable {
 
 		return(list.get(0));
 	}
+
+	protected Date castDate(String value) throws ServantException {
+		if(null == value) {
+			return(null);
+		}
+
+		java.util.Date parsed = null;
+		try {
+			parsed = SIMPLE_DATE_FORMAT.parse(value);
+		} catch (ParseException ex) {
+			throw new ServantException(ex.getMessage());
+		}
+
+		if(null == parsed) {
+			return(null);
+		}
+
+		return(new Date(parsed.getTime()));
+	}
+
+	protected String castString(String value) throws ServantException {
+		return(value);
+	}
+
+	protected Integer castInteger(String value) throws ServantException {
+		if(null == value) {
+			return(null);
+		}
+		try {
+			return(Integer.valueOf(value));
+		} catch(NumberFormatException ex) {
+			throw new ServantException(ex.getMessage());
+		}
+	}
+
+	protected Boolean castBoolean(String value) throws ServantException {
+		if(null == value) {
+			return(null);
+		}
+
+		return(Boolean.valueOf(value));
+	}
+
+	protected Timestamp castTimestamp(String value) throws ServantException {
+		if(null == value) {
+			return(null);
+		}
+
+		try {
+			return(Timestamp.valueOf(value));
+		} catch(IllegalArgumentException ex) {
+			throw new ServantException(ex.getMessage());
+		}
+	}
+
+	protected Long castLong(String value) throws ServantException {
+		if(null == value) {
+			return(null);
+		}
+		try {
+			return(Long.valueOf(value));
+		} catch(NumberFormatException ex) {
+			throw new ServantException(ex.getMessage());
+		}
+	}
+
+	protected Float castFloat(String value) throws ServantException {
+		if(null == value) {
+			return(null);
+		}
+		try {
+			return(Float.valueOf(value));
+		} catch(NumberFormatException ex) {
+			throw new ServantException(ex.getMessage());
+		}
+	}
+
 }

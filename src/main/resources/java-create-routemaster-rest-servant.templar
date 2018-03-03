@@ -8,11 +8,13 @@ import java.io.File;{\n}
 import java.sql.SQLException;{\n}
 {\n}
 import java.util.List;{\n}
+import java.sql.Date;{\n}
 import java.util.Map;{\n}
 {\n}
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;{\n}
 import fi.iki.elonen.NanoHTTPD.Response;{\n}
 import synapticloop.h2zero.base.exception.H2ZeroFinderException;{\n}
+import synapticloop.h2zero.base.exception.H2ZeroPrimaryKeyException;{\n}
 import synapticloop.nanohttpd.utils.HttpUtils;{\n}
 {if !table.isConstant}
 	import synapticloop.sample.h2zero.{options.database}.deleter.{table.javaClassName}Deleter;{\n}
@@ -74,14 +76,32 @@ public class {table.javaClassName}Servant extends BaseServant {{{\n}
 {else}
 	{\t}{\t}Map<String, List<String>> parameters = httpSession.getParameters();{\n}
 
+	{\t}{\t}Long primaryKey = null;{\n}
+	{\t}{\t}try {{{\n}
 	{loop table.fields as field}
 		{if !field.primary}
-			{\t}{\t}parameters.
+			{\t}{\t}{\t}{field.javaType} {field.javaName} = cast{field.javaType}(getFirstParameter("{field.javaName}", parameters));{\n}
 		{endif}
 	{endloop}
-
-	{\t}{\t}return(HttpUtils.okResponse(APPLICATION_JSON, "{{\"primaryKey\": " + "" + "}"));{\n}
+	{\t}{\t}{\t}{table.javaClassName} {table.javaFieldName} = new {table.javaClassName}(null
+		{loop table.fields as field}
+			{if !field.primary}
+				, {field.javaName}
+			{endif}
+		{endloop});{\n}
+	{\n}
+	{\t}{\t}{\t}{table.javaFieldName}.insert();{\n}
+	{\t}{\t}{\t}primaryKey = {table.javaFieldName}.getPrimaryKey();{\n}
+	{\t}{\t}} catch (ServantException ex) {{{\n}
+	{\t}{\t}{\t}return(HttpUtils.badRequestResponse(APPLICATION_JSON, "{{\"error\":\"" + ex.getMessage() + "\"}"));{\n}
+	{\t}{\t}} catch (H2ZeroPrimaryKeyException ex) {{{\n}
+	{\t}{\t}{\t}return(HttpUtils.badRequestResponse(APPLICATION_JSON, "{{\"error\":\"" + ex.getMessage() + "\"}"));{\n}
+	{\t}{\t}} catch (SQLException ex) {{{\n}
+	{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, "{{\"error\":\"" + ex.getMessage() + "\"}"));{\n}
+	{\t}{\t}}{\n}
+	{\t}{\t}return(HttpUtils.okResponse(APPLICATION_JSON, "{{\"primaryKey\": " + primaryKey + "}"));{\n}
 {endif}
+
 
 {\t}}{\n}
 {\n}
