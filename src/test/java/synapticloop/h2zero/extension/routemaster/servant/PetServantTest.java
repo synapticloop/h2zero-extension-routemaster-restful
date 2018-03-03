@@ -13,6 +13,7 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,6 +23,7 @@ import synapticloop.h2zero.base.exception.H2ZeroFinderException;
 import synapticloop.h2zero.extension.routemaster.servant.utils.Helper;
 import synapticloop.h2zero.extension.routemaster.servant.utils.MockHttpSession;
 import synapticloop.h2zero.model.Constant;
+import synapticloop.sample.h2zero.sqlite3.deleter.PetDeleter;
 import synapticloop.sample.h2zero.sqlite3.finder.PetFinder;
 import synapticloop.sample.h2zero.sqlite3.model.Pet;
 import synapticloop.sample.h2zero.sqlite3.model.util.Constants;
@@ -215,5 +217,10 @@ public class PetServantTest {
 	public void doNullPost() {
 		Response doPostResponse = petServant.doPost(null, null, null, null);
 		assertEquals(NanoHTTPD.Response.Status.BAD_REQUEST.getRequestStatus(), doPostResponse.getStatus().getRequestStatus());
+	}
+
+	@AfterClass
+	public static void afterClass() {
+		PetDeleter.deleteAllSilent();
 	}
 }
