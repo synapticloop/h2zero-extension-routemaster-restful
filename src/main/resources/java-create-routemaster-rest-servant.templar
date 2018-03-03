@@ -9,6 +9,7 @@ import java.sql.SQLException;{\n}
 {\n}
 import java.util.List;{\n}
 import java.sql.Date;{\n}
+import java.sql.Timestamp;{\n}
 import java.util.Map;{\n}
 {\n}
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;{\n}
@@ -42,7 +43,7 @@ public class {table.javaClassName}Servant extends BaseServant {{{\n}
 {\t}{\t}{\t}{\t}{\t}{table.javaClassName} {table.javaFieldName} = {table.javaClassName}Finder.findByPrimaryKey(primaryKey);{\n}
 {\t}{\t}{\t}{\t}{\t}return(HttpUtils.okResponse(APPLICATION_JSON, {table.javaFieldName}.toJsonString()));{\n}
 {\t}{\t}{\t}{\t}} catch (NumberFormatException | H2ZeroFinderException ex) {{{\n}
-{\t}{\t}{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(ex.getMessage()));{\n}
+{\t}{\t}{\t}{\t}{\t}return(HttpUtils.badRequestResponse(ex.getMessage()));{\n}
 {\t}{\t}{\t}{\t}}{\n}
 {\t}{\t}{\t}}{\n}
 {\t}{\t}}{\n}
@@ -74,8 +75,16 @@ public class {table.javaClassName}Servant extends BaseServant {{{\n}
 	{\t}{\t}// This is a constant table and cannot be altered{\n}
 	{\t}{\t}return(HttpUtils.forbiddenResponse());{\n}
 {else}
+	{\t}{\t}if(null == httpSession) {{{\n}
+	{\t}{\t}{\t}return(HttpUtils.badRequestResponse());{\n}
+	{\t}{\t}}{\n}
+	{\n}
 	{\t}{\t}Map<String, List<String>> parameters = httpSession.getParameters();{\n}
-
+	{\n}
+	{\t}{\t}if(null == parameters) {{{\n}
+	{\t}{\t}{\t}return(HttpUtils.badRequestResponse());{\n}
+	{\t}{\t}}{\n}
+	{\n}
 	{\t}{\t}Long primaryKey = null;{\n}
 	{\t}{\t}try {{{\n}
 	{loop table.fields as field}
@@ -92,9 +101,7 @@ public class {table.javaClassName}Servant extends BaseServant {{{\n}
 	{\n}
 	{\t}{\t}{\t}{table.javaFieldName}.insert();{\n}
 	{\t}{\t}{\t}primaryKey = {table.javaFieldName}.getPrimaryKey();{\n}
-	{\t}{\t}} catch (ServantException ex) {{{\n}
-	{\t}{\t}{\t}return(HttpUtils.badRequestResponse(APPLICATION_JSON, "{{\"error\":\"" + ex.getMessage() + "\"}"));{\n}
-	{\t}{\t}} catch (H2ZeroPrimaryKeyException ex) {{{\n}
+	{\t}{\t}} catch (ServantException | H2ZeroPrimaryKeyException ex) {{{\n}
 	{\t}{\t}{\t}return(HttpUtils.badRequestResponse(APPLICATION_JSON, "{{\"error\":\"" + ex.getMessage() + "\"}"));{\n}
 	{\t}{\t}} catch (SQLException ex) {{{\n}
 	{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, "{{\"error\":\"" + ex.getMessage() + "\"}"));{\n}
@@ -111,7 +118,41 @@ public class {table.javaClassName}Servant extends BaseServant {{{\n}
 	{\t}{\t}// This is a constant table and cannot be altered{\n}
 	{\t}{\t}return(HttpUtils.forbiddenResponse());{\n}
 {else}
-	{\t}{\t}return super.doPut(rootDir, httpSession, restParams, unmappedParams);{\n}
+	{\n}
+	{\t}{\t}{table.javaClassName} {table.javaFieldName} = null;{\n}{\n}
+
+	{\t}{\t}if(null != restParams) {{{\n}
+	{\t}{\t}{\t}String primaryKeyString = restParams.get(Constants.{table.upperName}_{table.primaryKey.upperName});{\n}
+	{\t}{\t}{\t}if(null != primaryKeyString) {{{\n}
+	{\t}{\t}{\t}{\t}try {{{\n}
+	{\t}{\t}{\t}{\t}{\t}Long primaryKey = Long.parseLong(primaryKeyString);{\n}
+	{\t}{\t}{\t}{\t}{\t}{table.javaFieldName} = {table.javaClassName}Finder.findByPrimaryKey(primaryKey);{\n}
+	{\t}{\t}{\t}{\t}} catch (NumberFormatException | H2ZeroFinderException ex) {{{\n}
+	{\t}{\t}{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(ex.getMessage()));{\n}
+	{\t}{\t}{\t}{\t}}{\n}
+	{\t}{\t}{\t}}{\n}
+	{\t}{\t}} else {{{\n}
+	{\t}{\t}{\t}return(HttpUtils.badRequestResponse(APPLICATION_JSON, "{{\"error\":\"missing primary key\"}"));{\n}
+	{\t}{\t}}{\n}
+	{\n}
+
+	{\t}{\t}Map<String, List<String>> parameters = httpSession.getParameters();{\n}
+
+	{\t}{\t}try {{{\n}
+	{loop table.fields as field}
+		{if !field.primary}
+			{\t}{\t}{\t}{table.javaFieldName}.set{field.javaAccessorName}(cast{field.javaType}(getFirstParameter("{field.javaName}", parameters)));{\n}
+		{endif}
+	{endloop}
+	{\n}
+	{\t}{\t}{\t}{table.javaFieldName}.update();{\n}
+	{\t}{\t}} catch (ServantException | H2ZeroPrimaryKeyException ex) {{{\n}
+	{\t}{\t}{\t}return(HttpUtils.badRequestResponse(APPLICATION_JSON, "{{\"error\":\"" + ex.getMessage() + "\"}"));{\n}
+	{\t}{\t}} catch (SQLException ex) {{{\n}
+	{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, "{{\"error\":\"" + ex.getMessage() + "\"}"));{\n}
+	{\t}{\t}}{\n}
+	{\n}
+	{\t}{\t}return(HttpUtils.okResponse());{\n}
 {endif}
 {\t}}{\n}
 {\n}

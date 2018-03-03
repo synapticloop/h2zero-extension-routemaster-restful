@@ -9,6 +9,7 @@ import java.sql.SQLException;
 
 import java.util.List;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
@@ -39,7 +40,7 @@ public class UserTypeServant extends BaseServant {
 					UserType userType = UserTypeFinder.findByPrimaryKey(primaryKey);
 					return(HttpUtils.okResponse(APPLICATION_JSON, userType.toJsonString()));
 				} catch (NumberFormatException | H2ZeroFinderException ex) {
-					return(HttpUtils.internalServerErrorResponse(ex.getMessage()));
+					return(HttpUtils.badRequestResponse(ex.getMessage()));
 				}
 			}
 		}

@@ -2,6 +2,8 @@ package synapticloop.h2zero.extension.routemaster.servant.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +13,7 @@ import fi.iki.elonen.NanoHTTPD.Method;
 import fi.iki.elonen.NanoHTTPD.ResponseException;
 
 public class MockHttpSession implements IHTTPSession {
+	Map<String, List<String>> parameters = new HashMap<String, List<String>>();
 
 	@Override
 	public void execute() throws IOException {
@@ -50,8 +53,7 @@ public class MockHttpSession implements IHTTPSession {
 
 	@Override
 	public Map<String, List<String>> getParameters() {
-		// TODO Auto-generated method stub
-		return null;
+		return parameters;
 	}
 
 	@Override
@@ -84,4 +86,15 @@ public class MockHttpSession implements IHTTPSession {
 		return null;
 	}
 
+	public void addParameter(String name, Object value) {
+		List<String> values = null;
+		if(parameters.containsKey(name)) {
+			values = parameters.get(name);
+		} else {
+			values = new ArrayList<String>();
+		}
+
+		values.add(value.toString());
+		parameters.put(name, values);
+	}
 }

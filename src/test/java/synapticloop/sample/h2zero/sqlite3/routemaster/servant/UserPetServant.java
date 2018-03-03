@@ -9,6 +9,7 @@ import java.sql.SQLException;
 
 import java.util.List;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
@@ -40,7 +41,7 @@ public class UserPetServant extends BaseServant {
 					UserPet userPet = UserPetFinder.findByPrimaryKey(primaryKey);
 					return(HttpUtils.okResponse(APPLICATION_JSON, userPet.toJsonString()));
 				} catch (NumberFormatException | H2ZeroFinderException ex) {
-					return(HttpUtils.internalServerErrorResponse(ex.getMessage()));
+					return(HttpUtils.badRequestResponse(ex.getMessage()));
 				}
 			}
 		}
@@ -68,7 +69,16 @@ public class UserPetServant extends BaseServant {
 
 	@Override
 	public Response doPost(File rootDir, IHTTPSession httpSession, Map<String, String> restParams, String unmappedParams) {
+		if(null == httpSession) {
+			return(HttpUtils.badRequestResponse());
+		}
+
 		Map<String, List<String>> parameters = httpSession.getParameters();
+
+		if(null == parameters) {
+			return(HttpUtils.badRequestResponse());
+		}
+
 		Long primaryKey = null;
 		try {
 			Long idUser = castLong(getFirstParameter("idUser", parameters));
@@ -77,9 +87,7 @@ public class UserPetServant extends BaseServant {
 
 			userPet.insert();
 			primaryKey = userPet.getPrimaryKey();
-		} catch (ServantException ex) {
-			return(HttpUtils.badRequestResponse(APPLICATION_JSON, "{\"error\":\"" + ex.getMessage() + "\"}"));
-		} catch (H2ZeroPrimaryKeyException ex) {
+		} catch (ServantException | H2ZeroPrimaryKeyException ex) {
 			return(HttpUtils.badRequestResponse(APPLICATION_JSON, "{\"error\":\"" + ex.getMessage() + "\"}"));
 		} catch (SQLException ex) {
 			return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, "{\"error\":\"" + ex.getMessage() + "\"}"));
@@ -89,7 +97,36 @@ public class UserPetServant extends BaseServant {
 
 	@Override
 	public Response doPut(File rootDir, IHTTPSession httpSession, Map<String, String> restParams, String unmappedParams) {
-		return super.doPut(rootDir, httpSession, restParams, unmappedParams);
+
+		UserPet userPet = null;
+
+		if(null != restParams) {
+			String primaryKeyString = restParams.get(Constants.USER_PET_ID_USER_PET);
+			if(null != primaryKeyString) {
+				try {
+					Long primaryKey = Long.parseLong(primaryKeyString);
+					userPet = UserPetFinder.findByPrimaryKey(primaryKey);
+				} catch (NumberFormatException | H2ZeroFinderException ex) {
+					return(HttpUtils.internalServerErrorResponse(ex.getMessage()));
+				}
+			}
+		} else {
+			return(HttpUtils.badRequestResponse(APPLICATION_JSON, "{\"error\":\"missing primary key\"}"));
+		}
+
+		Map<String, List<String>> parameters = httpSession.getParameters();
+		try {
+			userPet.setIdUser(castLong(getFirstParameter("idUser", parameters)));
+			userPet.setIdPet(castLong(getFirstParameter("idPet", parameters)));
+
+			userPet.update();
+		} catch (ServantException | H2ZeroPrimaryKeyException ex) {
+			return(HttpUtils.badRequestResponse(APPLICATION_JSON, "{\"error\":\"" + ex.getMessage() + "\"}"));
+		} catch (SQLException ex) {
+			return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, "{\"error\":\"" + ex.getMessage() + "\"}"));
+		}
+
+		return(HttpUtils.okResponse());
 	}
 
 	@Override
