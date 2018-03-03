@@ -118,7 +118,20 @@ public class PetServantTest {
 	@Test
 	public void doForbiddenDelete() {
 		Response doDeleteResponse = petServant.doDelete(null, null, null, null);
-		assertEquals(NanoHTTPD.Response.Status.BAD_REQUEST.getRequestStatus(), doDeleteResponse.getStatus().getRequestStatus());
+		assertEquals(NanoHTTPD.Response.Status.FORBIDDEN.getRequestStatus(), doDeleteResponse.getStatus().getRequestStatus());
+	}
 
+	@Test
+	public void doNotFoundDelete() {
+		Map<String, String> restParams = new HashMap<String, String>();
+		restParams.put(Constants.PET_ID_PET, "-1");
+		Response doDeleteResponse = petServant.doDelete(null, null, restParams, null);
+		assertEquals(NanoHTTPD.Response.Status.NOT_FOUND.getRequestStatus(), doDeleteResponse.getStatus().getRequestStatus());
+	}
+
+	@Test
+	public void doNullPost() {
+		Response doPostResponse = petServant.doPost(null, null, null, null);
+		assertEquals(NanoHTTPD.Response.Status.BAD_REQUEST.getRequestStatus(), doPostResponse.getStatus().getRequestStatus());
 	}
 }

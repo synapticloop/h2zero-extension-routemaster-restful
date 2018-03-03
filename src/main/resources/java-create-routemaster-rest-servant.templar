@@ -172,7 +172,9 @@ public class {table.javaClassName}Servant extends BaseServant {{{\n}
 	{\t}{\t}{\t}{\t}{\t}{\t}return(HttpUtils.notFoundResponse(APPLICATION_JSON, "{{\"error\":\"primary key of '" +  primaryKeyString + "' not found.\"}"));{\n}
 	{\t}{\t}{\t}{\t}{\t}}{\n}
 	{\t}{\t}{\t}{\t}{\t}return(HttpUtils.okResponse());{\n}
-	{\t}{\t}{\t}{\t}} catch (NumberFormatException | SQLException ex) {{{\n}
+	{\t}{\t}{\t}{\t}} catch (NumberFormatException ex) {{{\n}
+	{\t}{\t}{\t}{\t}{\t}return(HttpUtils.badRequestResponse(ex.getMessage()));{\n}
+	{\t}{\t}{\t}{\t}} catch(SQLException ex) {{{\n}
 	{\t}{\t}{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(ex.getMessage()));{\n}
 	{\t}{\t}{\t}{\t}}{\n}
 	{\t}{\t}{\t}}{\n}

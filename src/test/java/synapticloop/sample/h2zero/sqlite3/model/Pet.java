@@ -213,12 +213,12 @@ public class Pet extends ModelBase {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("{\n");
 		stringBuilder.append("  \"type\": \"Pet\",\n");
-		stringBuilder.append("     \"idPet\": " + this.idPet + " , \n");
-		stringBuilder.append("     \"nmPet\": \"" + this.nmPet + "\" , \n");
-		stringBuilder.append("     \"numAge\": " + this.numAge + " , \n");
-		stringBuilder.append("     \"fltWeight\": " + this.fltWeight + " , \n");
-		stringBuilder.append("     \"dtBirthday\": \"" + this.dtBirthday + "\" , \n");
-		stringBuilder.append("     \"imgPhoto\": \"" + this.imgPhoto + "\" \n");
+		stringBuilder.append("  \"idPet\": " + this.idPet + " , \n");
+		stringBuilder.append("  \"nmPet\": \"" + this.nmPet + "\" , \n");
+		stringBuilder.append("  \"numAge\": " + this.numAge + " , \n");
+		stringBuilder.append("  \"fltWeight\": " + this.fltWeight + " , \n");
+		stringBuilder.append("  \"dtBirthday\": \"" + this.dtBirthday + "\" , \n");
+		stringBuilder.append("  \"imgPhoto\": \"" + this.imgPhoto + "\" \n");
 		stringBuilder.append("}\n");
 		return(stringBuilder.toString());
 	}

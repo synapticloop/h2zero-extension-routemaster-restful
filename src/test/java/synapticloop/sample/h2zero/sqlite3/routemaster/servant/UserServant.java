@@ -151,7 +151,9 @@ public class UserServant extends BaseServant {
 						return(HttpUtils.notFoundResponse(APPLICATION_JSON, "{\"error\":\"primary key of '" +  primaryKeyString + "' not found.\"}"));
 					}
 					return(HttpUtils.okResponse());
-				} catch (NumberFormatException | SQLException ex) {
+				} catch (NumberFormatException ex) {
+					return(HttpUtils.badRequestResponse(ex.getMessage()));
+				} catch(SQLException ex) {
 					return(HttpUtils.internalServerErrorResponse(ex.getMessage()));
 				}
 			}
