@@ -39,8 +39,10 @@ public class UserTitleServant extends BaseServant {
 					Long primaryKey = Long.parseLong(primaryKeyString);
 					UserTitle userTitle = UserTitleFinder.findByPrimaryKey(primaryKey);
 					return(HttpUtils.okResponse(APPLICATION_JSON, userTitle.toJsonString()));
-				} catch (NumberFormatException | H2ZeroFinderException ex) {
-					return(HttpUtils.badRequestResponse(ex.getMessage()));
+				} catch (NumberFormatException ex) {
+					return(HttpUtils.badRequestResponse(APPLICATION_JSON, getErrorObjectAsString("Could not parse '" + primaryKeyString + "' to a valid number.")));
+				} catch(H2ZeroFinderException ex) {
+					return(HttpUtils.notFoundResponse(APPLICATION_JSON, getErrorObjectAsString("Could not find 'UserTitle' with primary key of '" + primaryKeyString + "'.")));
 				}
 			}
 		}
@@ -51,7 +53,7 @@ public class UserTitleServant extends BaseServant {
 		try {
 			findAll = UserTitleFinder.findAll();
 		} catch (SQLException ex) {
-			return(HttpUtils.internalServerErrorResponse(ex.getMessage()));
+			return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString("SQL Exception, message was: " + ex.getMessage())));
 		}
 		StringBuilder stringBuilder = new StringBuilder("[");
 		boolean first = true;

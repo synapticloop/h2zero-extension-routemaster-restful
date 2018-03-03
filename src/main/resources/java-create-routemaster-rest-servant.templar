@@ -42,8 +42,10 @@ public class {table.javaClassName}Servant extends BaseServant {{{\n}
 {\t}{\t}{\t}{\t}{\t}Long primaryKey = Long.parseLong(primaryKeyString);{\n}
 {\t}{\t}{\t}{\t}{\t}{table.javaClassName} {table.javaFieldName} = {table.javaClassName}Finder.findByPrimaryKey(primaryKey);{\n}
 {\t}{\t}{\t}{\t}{\t}return(HttpUtils.okResponse(APPLICATION_JSON, {table.javaFieldName}.toJsonString()));{\n}
-{\t}{\t}{\t}{\t}} catch (NumberFormatException | H2ZeroFinderException ex) {{{\n}
-{\t}{\t}{\t}{\t}{\t}return(HttpUtils.badRequestResponse(ex.getMessage()));{\n}
+{\t}{\t}{\t}{\t}} catch (NumberFormatException ex) {{{\n}
+{\t}{\t}{\t}{\t}{\t}return(HttpUtils.badRequestResponse(APPLICATION_JSON, getErrorObjectAsString("Could not parse '" + primaryKeyString + "' to a valid number.")));{\n}
+{\t}{\t}{\t}{\t}} catch(H2ZeroFinderException ex) {{{\n}
+{\t}{\t}{\t}{\t}{\t}return(HttpUtils.notFoundResponse(APPLICATION_JSON, getErrorObjectAsString("Could not find '{table.javaClassName}' with primary key of '" + primaryKeyString + "'.")));{\n}
 {\t}{\t}{\t}{\t}}{\n}
 {\t}{\t}{\t}}{\n}
 {\t}{\t}}{\n}
@@ -54,7 +56,7 @@ public class {table.javaClassName}Servant extends BaseServant {{{\n}
 {\t}{\t}try {{{\n}
 {\t}{\t}{\t}findAll = {table.javaClassName}Finder.findAll();{\n}
 {\t}{\t}} catch (SQLException ex) {{{\n}
-{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(ex.getMessage()));{\n}
+{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString("SQL Exception, message was: " + ex.getMessage())));{\n}
 {\t}{\t}}{\n}
 {\t}{\t}StringBuilder stringBuilder = new StringBuilder("[");{\n}
 {\t}{\t}boolean first = true;{\n}
@@ -104,7 +106,7 @@ public class {table.javaClassName}Servant extends BaseServant {{{\n}
 	{\t}{\t}} catch (ServantException | H2ZeroPrimaryKeyException ex) {{{\n}
 	{\t}{\t}{\t}return(HttpUtils.badRequestResponse(APPLICATION_JSON, getErrorObjectAsString(ex.getMessage())));{\n}
 	{\t}{\t}} catch (SQLException ex) {{{\n}
-	{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString(ex.getMessage())));{\n}
+	{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString("SQL Exception, message was: " + ex.getMessage())));{\n}
 	{\t}{\t}}{\n}
 	{\t}{\t}return(HttpUtils.okResponse(APPLICATION_JSON, "{{\"primaryKey\": " + primaryKey + "}"));{\n}
 {endif}
@@ -127,8 +129,10 @@ public class {table.javaClassName}Servant extends BaseServant {{{\n}
 	{\t}{\t}{\t}{\t}try {{{\n}
 	{\t}{\t}{\t}{\t}{\t}Long primaryKey = Long.parseLong(primaryKeyString);{\n}
 	{\t}{\t}{\t}{\t}{\t}{table.javaFieldName} = {table.javaClassName}Finder.findByPrimaryKey(primaryKey);{\n}
-	{\t}{\t}{\t}{\t}} catch (NumberFormatException | H2ZeroFinderException ex) {{{\n}
-	{\t}{\t}{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(ex.getMessage()));{\n}
+	{\t}{\t}{\t}{\t}} catch (NumberFormatException ex) {{{\n}
+	{\t}{\t}{\t}{\t}{\t}return(HttpUtils.badRequestResponse(APPLICATION_JSON, getErrorObjectAsString("Could not parse '" + primaryKeyString + "' to a valid number.")));{\n}
+	{\t}{\t}{\t}{\t}} catch(H2ZeroFinderException ex) {{{\n}
+	{\t}{\t}{\t}{\t}{\t}return(HttpUtils.notFoundResponse(APPLICATION_JSON, getErrorObjectAsString("Could not find '{table.javaClassName}' with primary key of '" + primaryKeyString + "'.")));{\n}
 	{\t}{\t}{\t}{\t}}{\n}
 	{\t}{\t}{\t}}{\n}
 	{\t}{\t}} else {{{\n}
@@ -149,7 +153,7 @@ public class {table.javaClassName}Servant extends BaseServant {{{\n}
 	{\t}{\t}} catch (ServantException | H2ZeroPrimaryKeyException ex) {{{\n}
 	{\t}{\t}{\t}return(HttpUtils.badRequestResponse(APPLICATION_JSON, getErrorObjectAsString(ex.getMessage())));{\n}
 	{\t}{\t}} catch (SQLException ex) {{{\n}
-	{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString(ex.getMessage())));{\n}
+	{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString("SQL Exception, message was: " + ex.getMessage())));{\n}
 	{\t}{\t}}{\n}
 	{\n}
 	{\t}{\t}return(HttpUtils.okResponse());{\n}
@@ -173,9 +177,9 @@ public class {table.javaClassName}Servant extends BaseServant {{{\n}
 	{\t}{\t}{\t}{\t}{\t}}{\n}
 	{\t}{\t}{\t}{\t}{\t}return(HttpUtils.okResponse());{\n}
 	{\t}{\t}{\t}{\t}} catch (NumberFormatException ex) {{{\n}
-	{\t}{\t}{\t}{\t}{\t}return(HttpUtils.badRequestResponse(getErrorObjectAsString("Could not parse '" + primaryKeyString + "' to a valid number.")));{\n}
+	{\t}{\t}{\t}{\t}{\t}return(HttpUtils.badRequestResponse(APPLICATION_JSON, getErrorObjectAsString("Could not parse '" + primaryKeyString + "' to a valid number.")));{\n}
 	{\t}{\t}{\t}{\t}} catch(SQLException ex) {{{\n}
-	{\t}{\t}{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(getErrorObjectAsString("SQL Exception, message was: " + ex.getMessage())));{\n}
+	{\t}{\t}{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString("SQL Exception, message was: " + ex.getMessage())));{\n}
 	{\t}{\t}{\t}{\t}}{\n}
 	{\t}{\t}{\t}}{\n}
 	{\t}{\t}}{\n}

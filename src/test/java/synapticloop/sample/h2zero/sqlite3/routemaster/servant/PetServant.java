@@ -40,8 +40,10 @@ public class PetServant extends BaseServant {
 					Long primaryKey = Long.parseLong(primaryKeyString);
 					Pet pet = PetFinder.findByPrimaryKey(primaryKey);
 					return(HttpUtils.okResponse(APPLICATION_JSON, pet.toJsonString()));
-				} catch (NumberFormatException | H2ZeroFinderException ex) {
-					return(HttpUtils.badRequestResponse(ex.getMessage()));
+				} catch (NumberFormatException ex) {
+					return(HttpUtils.badRequestResponse(APPLICATION_JSON, getErrorObjectAsString("Could not parse '" + primaryKeyString + "' to a valid number.")));
+				} catch(H2ZeroFinderException ex) {
+					return(HttpUtils.notFoundResponse(APPLICATION_JSON, getErrorObjectAsString("Could not find 'Pet' with primary key of '" + primaryKeyString + "'.")));
 				}
 			}
 		}
@@ -52,7 +54,7 @@ public class PetServant extends BaseServant {
 		try {
 			findAll = PetFinder.findAll();
 		} catch (SQLException ex) {
-			return(HttpUtils.internalServerErrorResponse(ex.getMessage()));
+			return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString("SQL Exception, message was: " + ex.getMessage())));
 		}
 		StringBuilder stringBuilder = new StringBuilder("[");
 		boolean first = true;
@@ -93,7 +95,7 @@ public class PetServant extends BaseServant {
 		} catch (ServantException | H2ZeroPrimaryKeyException ex) {
 			return(HttpUtils.badRequestResponse(APPLICATION_JSON, getErrorObjectAsString(ex.getMessage())));
 		} catch (SQLException ex) {
-			return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString(ex.getMessage())));
+			return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString("SQL Exception, message was: " + ex.getMessage())));
 		}
 		return(HttpUtils.okResponse(APPLICATION_JSON, "{\"primaryKey\": " + primaryKey + "}"));
 	}
@@ -109,8 +111,10 @@ public class PetServant extends BaseServant {
 				try {
 					Long primaryKey = Long.parseLong(primaryKeyString);
 					pet = PetFinder.findByPrimaryKey(primaryKey);
-				} catch (NumberFormatException | H2ZeroFinderException ex) {
-					return(HttpUtils.internalServerErrorResponse(ex.getMessage()));
+				} catch (NumberFormatException ex) {
+					return(HttpUtils.badRequestResponse(APPLICATION_JSON, getErrorObjectAsString("Could not parse '" + primaryKeyString + "' to a valid number.")));
+				} catch(H2ZeroFinderException ex) {
+					return(HttpUtils.notFoundResponse(APPLICATION_JSON, getErrorObjectAsString("Could not find 'Pet' with primary key of '" + primaryKeyString + "'.")));
 				}
 			}
 		} else {
@@ -129,7 +133,7 @@ public class PetServant extends BaseServant {
 		} catch (ServantException | H2ZeroPrimaryKeyException ex) {
 			return(HttpUtils.badRequestResponse(APPLICATION_JSON, getErrorObjectAsString(ex.getMessage())));
 		} catch (SQLException ex) {
-			return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString(ex.getMessage())));
+			return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString("SQL Exception, message was: " + ex.getMessage())));
 		}
 
 		return(HttpUtils.okResponse());
@@ -148,9 +152,9 @@ public class PetServant extends BaseServant {
 					}
 					return(HttpUtils.okResponse());
 				} catch (NumberFormatException ex) {
-					return(HttpUtils.badRequestResponse(getErrorObjectAsString("Could not parse '" + primaryKeyString + "' to a valid number.")));
+					return(HttpUtils.badRequestResponse(APPLICATION_JSON, getErrorObjectAsString("Could not parse '" + primaryKeyString + "' to a valid number.")));
 				} catch(SQLException ex) {
-					return(HttpUtils.internalServerErrorResponse(getErrorObjectAsString("SQL Exception, message was: " + ex.getMessage())));
+					return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString("SQL Exception, message was: " + ex.getMessage())));
 				}
 			}
 		}
