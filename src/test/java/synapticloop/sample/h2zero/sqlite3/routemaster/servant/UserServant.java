@@ -93,9 +93,9 @@ public class UserServant extends BaseServant {
 			user.insert();
 			primaryKey = user.getPrimaryKey();
 		} catch (ServantException | H2ZeroPrimaryKeyException ex) {
-			return(HttpUtils.badRequestResponse(APPLICATION_JSON, "{\"error\":\"" + ex.getMessage() + "\"}"));
+			return(HttpUtils.badRequestResponse(APPLICATION_JSON, getErrorObjectAsString(ex.getMessage())));
 		} catch (SQLException ex) {
-			return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, "{\"error\":\"" + ex.getMessage() + "\"}"));
+			return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString(ex.getMessage())));
 		}
 		return(HttpUtils.okResponse(APPLICATION_JSON, "{\"primaryKey\": " + primaryKey + "}"));
 	}
@@ -116,7 +116,7 @@ public class UserServant extends BaseServant {
 				}
 			}
 		} else {
-			return(HttpUtils.badRequestResponse(APPLICATION_JSON, "{\"error\":\"missing primary key\"}"));
+			return(HttpUtils.badRequestResponse(APPLICATION_JSON, getErrorObjectAsString("Invalid route")));
 		}
 
 		Map<String, List<String>> parameters = httpSession.getParameters();
@@ -131,9 +131,9 @@ public class UserServant extends BaseServant {
 
 			user.update();
 		} catch (ServantException | H2ZeroPrimaryKeyException ex) {
-			return(HttpUtils.badRequestResponse(APPLICATION_JSON, "{\"error\":\"" + ex.getMessage() + "\"}"));
+			return(HttpUtils.badRequestResponse(APPLICATION_JSON, getErrorObjectAsString(ex.getMessage())));
 		} catch (SQLException ex) {
-			return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, "{\"error\":\"" + ex.getMessage() + "\"}"));
+			return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString(ex.getMessage())));
 		}
 
 		return(HttpUtils.okResponse());
@@ -148,13 +148,13 @@ public class UserServant extends BaseServant {
 					Long primaryKey = Long.parseLong(primaryKeyString);
 					int numDeleted = UserDeleter.deleteByPrimaryKey(primaryKey);
 					if(1 != numDeleted) {
-						return(HttpUtils.notFoundResponse(APPLICATION_JSON, "{\"error\":\"primary key of '" +  primaryKeyString + "' not found.\"}"));
+						return(HttpUtils.notFoundResponse(APPLICATION_JSON, getErrorObjectAsString("Could not find 'User' with primary key of '" + primaryKeyString + "'.")));
 					}
 					return(HttpUtils.okResponse());
 				} catch (NumberFormatException ex) {
-					return(HttpUtils.badRequestResponse(ex.getMessage()));
+					return(HttpUtils.badRequestResponse(getErrorObjectAsString("Could not parse '" + primaryKeyString + "' to a valid number.")));
 				} catch(SQLException ex) {
-					return(HttpUtils.internalServerErrorResponse(ex.getMessage()));
+					return(HttpUtils.internalServerErrorResponse(getErrorObjectAsString("SQL Exception, message was: " + ex.getMessage())));
 				}
 			}
 		}

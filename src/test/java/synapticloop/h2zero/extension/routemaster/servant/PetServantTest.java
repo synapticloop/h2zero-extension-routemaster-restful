@@ -19,6 +19,7 @@ import org.junit.Test;
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Response;
 import synapticloop.h2zero.base.exception.H2ZeroFinderException;
+import synapticloop.h2zero.extension.routemaster.servant.utils.Helper;
 import synapticloop.h2zero.extension.routemaster.servant.utils.MockHttpSession;
 import synapticloop.h2zero.model.Constant;
 import synapticloop.sample.h2zero.sqlite3.finder.PetFinder;
@@ -129,6 +130,16 @@ public class PetServantTest {
 		assertEquals(NanoHTTPD.Response.Status.NOT_FOUND.getRequestStatus(), doDeleteResponse.getStatus().getRequestStatus());
 	}
 
+	@Test
+	public void doNotParseableDelete() throws IOException {
+		Map<String, String> restParams = new HashMap<String, String>();
+		restParams.put(Constants.PET_ID_PET, "this cannot be a number");
+		Response doDeleteResponse = petServant.doDelete(null, null, restParams, null);
+		System.out.println(Helper.readResponse(doDeleteResponse));
+		assertEquals(NanoHTTPD.Response.Status.BAD_REQUEST.getRequestStatus(), doDeleteResponse.getStatus().getRequestStatus());
+	}
+
+	
 	@Test
 	public void doNullPost() {
 		Response doPostResponse = petServant.doPost(null, null, null, null);

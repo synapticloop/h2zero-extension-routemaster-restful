@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;{\n}
 {\n}
 import java.util.List;{\n}
 import java.util.Map;{\n}
+import org.json.JSONObject;{\n}
 {\n}
 import synapticloop.nanohttpd.router.RestRoutable;{\n}
 {\n}
@@ -36,6 +37,12 @@ public abstract class BaseServant extends RestRoutable {{{\n}
 {\t}{\t}}{\n}
 {\n}
 {\t}{\t}return(list.get(0));{\n}
+{\t}}{\n}
+{\n}
+{\t}protected String getErrorObjectAsString(String message) {{{\n}
+{\t}{\t}JSONObject jsonObject = new JSONObject();{\n}
+{\t}{\t}jsonObject.put("error", message);{\n}
+{\t}{\t}return(jsonObject.toString());{\n}
 {\t}}{\n}
 {\n}
 {\t}protected Date castDate(String value) throws ServantException {{{\n}

@@ -102,9 +102,9 @@ public class {table.javaClassName}Servant extends BaseServant {{{\n}
 	{\t}{\t}{\t}{table.javaFieldName}.insert();{\n}
 	{\t}{\t}{\t}primaryKey = {table.javaFieldName}.getPrimaryKey();{\n}
 	{\t}{\t}} catch (ServantException | H2ZeroPrimaryKeyException ex) {{{\n}
-	{\t}{\t}{\t}return(HttpUtils.badRequestResponse(APPLICATION_JSON, "{{\"error\":\"" + ex.getMessage() + "\"}"));{\n}
+	{\t}{\t}{\t}return(HttpUtils.badRequestResponse(APPLICATION_JSON, getErrorObjectAsString(ex.getMessage())));{\n}
 	{\t}{\t}} catch (SQLException ex) {{{\n}
-	{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, "{{\"error\":\"" + ex.getMessage() + "\"}"));{\n}
+	{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString(ex.getMessage())));{\n}
 	{\t}{\t}}{\n}
 	{\t}{\t}return(HttpUtils.okResponse(APPLICATION_JSON, "{{\"primaryKey\": " + primaryKey + "}"));{\n}
 {endif}
@@ -132,7 +132,7 @@ public class {table.javaClassName}Servant extends BaseServant {{{\n}
 	{\t}{\t}{\t}{\t}}{\n}
 	{\t}{\t}{\t}}{\n}
 	{\t}{\t}} else {{{\n}
-	{\t}{\t}{\t}return(HttpUtils.badRequestResponse(APPLICATION_JSON, "{{\"error\":\"missing primary key\"}"));{\n}
+	{\t}{\t}{\t}return(HttpUtils.badRequestResponse(APPLICATION_JSON, getErrorObjectAsString("Invalid route")));{\n}
 	{\t}{\t}}{\n}
 	{\n}
 
@@ -147,9 +147,9 @@ public class {table.javaClassName}Servant extends BaseServant {{{\n}
 	{\n}
 	{\t}{\t}{\t}{table.javaFieldName}.update();{\n}
 	{\t}{\t}} catch (ServantException | H2ZeroPrimaryKeyException ex) {{{\n}
-	{\t}{\t}{\t}return(HttpUtils.badRequestResponse(APPLICATION_JSON, "{{\"error\":\"" + ex.getMessage() + "\"}"));{\n}
+	{\t}{\t}{\t}return(HttpUtils.badRequestResponse(APPLICATION_JSON, getErrorObjectAsString(ex.getMessage())));{\n}
 	{\t}{\t}} catch (SQLException ex) {{{\n}
-	{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, "{{\"error\":\"" + ex.getMessage() + "\"}"));{\n}
+	{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString(ex.getMessage())));{\n}
 	{\t}{\t}}{\n}
 	{\n}
 	{\t}{\t}return(HttpUtils.okResponse());{\n}
@@ -169,13 +169,13 @@ public class {table.javaClassName}Servant extends BaseServant {{{\n}
 	{\t}{\t}{\t}{\t}{\t}Long primaryKey = Long.parseLong(primaryKeyString);{\n}
 	{\t}{\t}{\t}{\t}{\t}int numDeleted = {table.javaClassName}Deleter.deleteByPrimaryKey(primaryKey);{\n}
 	{\t}{\t}{\t}{\t}{\t}if(1 != numDeleted) {{{\n}
-	{\t}{\t}{\t}{\t}{\t}{\t}return(HttpUtils.notFoundResponse(APPLICATION_JSON, "{{\"error\":\"primary key of '" +  primaryKeyString + "' not found.\"}"));{\n}
+	{\t}{\t}{\t}{\t}{\t}{\t}return(HttpUtils.notFoundResponse(APPLICATION_JSON, getErrorObjectAsString("Could not find '{table.javaClassName}' with primary key of '" + primaryKeyString + "'.")));{\n}
 	{\t}{\t}{\t}{\t}{\t}}{\n}
 	{\t}{\t}{\t}{\t}{\t}return(HttpUtils.okResponse());{\n}
 	{\t}{\t}{\t}{\t}} catch (NumberFormatException ex) {{{\n}
-	{\t}{\t}{\t}{\t}{\t}return(HttpUtils.badRequestResponse(ex.getMessage()));{\n}
+	{\t}{\t}{\t}{\t}{\t}return(HttpUtils.badRequestResponse(getErrorObjectAsString("Could not parse '" + primaryKeyString + "' to a valid number.")));{\n}
 	{\t}{\t}{\t}{\t}} catch(SQLException ex) {{{\n}
-	{\t}{\t}{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(ex.getMessage()));{\n}
+	{\t}{\t}{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(getErrorObjectAsString("SQL Exception, message was: " + ex.getMessage())));{\n}
 	{\t}{\t}{\t}{\t}}{\n}
 	{\t}{\t}{\t}}{\n}
 	{\t}{\t}}{\n}
