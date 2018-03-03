@@ -15,4 +15,4 @@ include 'api'
 include 'services:webservice'
 */
 
-rootProject.name = 'h2zero-extension-routemaster'
+rootProject.name = 'h2zero-extension-routemaster-restful'
