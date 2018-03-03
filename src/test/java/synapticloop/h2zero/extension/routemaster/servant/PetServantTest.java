@@ -63,6 +63,15 @@ public class PetServantTest {
 	}
 
 	@Test
+	public void doNotFoundGet() {
+		Map<String, String> restParams = new HashMap<String, String>();
+		restParams.put(Constants.PET_ID_PET, "-1");
+		Response doGetResponse = petServant.doGet(null, null, restParams, null);
+		assertEquals(NanoHTTPD.Response.Status.NOT_FOUND.getRequestStatus(), doGetResponse.getStatus().getRequestStatus());
+
+	}
+
+	@Test
 	public void testDoPost() throws IOException, H2ZeroFinderException {
 		MockHttpSession mockHttpSession = new MockHttpSession();
 		mockHttpSession.addParameter(Constants.PET_NM_PET, "Fido");
@@ -109,11 +118,74 @@ public class PetServantTest {
 		} finally {
 			IOUtils.closeQuietly(inputStream);
 		}
+	}
 
-		Response doDeleteResponse = petServant.doDelete(null, null, restParams, null);
-		assertEquals(200, doDeleteResponse.getStatus().getRequestStatus());
-		pet = PetFinder.findByPrimaryKeySilent(primaryKey);
-		assertNull(pet);
+	@Test
+	public void testDoPut() throws IOException, H2ZeroFinderException {
+		MockHttpSession mockHttpSession = new MockHttpSession();
+		mockHttpSession.addParameter(Constants.PET_NM_PET, "Fido");
+		mockHttpSession.addParameter(Constants.PET_IMG_PHOTO, "img-photo");
+		mockHttpSession.addParameter(Constants.PET_DT_BIRTHDAY, "2000-01-01");
+		mockHttpSession.addParameter(Constants.PET_NUM_AGE, 7);
+		mockHttpSession.addParameter(Constants.PET_FLT_WEIGHT, 2.3f);
+		Response doPostResponse = petServant.doPost(null, mockHttpSession, null, null);
+		assertEquals(200, doPostResponse.getStatus().getRequestStatus());
+
+		InputStream inputStream = null;
+		JSONObject jsonObject = null;
+		try {
+			inputStream = doPostResponse.getData();
+			String source = IOUtils.toString(inputStream, "UTF-8");
+
+			// test that this is parse-able
+			jsonObject = new JSONObject(source);
+		} finally {
+			IOUtils.closeQuietly(inputStream);
+		}
+
+		long primaryKey = jsonObject.getLong("primaryKey");
+		// now try and get the results
+
+		Pet pet = PetFinder.findByPrimaryKey(primaryKey);
+
+		mockHttpSession = new MockHttpSession();
+		mockHttpSession.addParameter(Constants.PET_NM_PET, "Fido-too");
+		mockHttpSession.addParameter(Constants.PET_IMG_PHOTO, "img-photo-too");
+		mockHttpSession.addParameter(Constants.PET_DT_BIRTHDAY, "2000-01-02");
+		mockHttpSession.addParameter(Constants.PET_NUM_AGE, 8);
+		mockHttpSession.addParameter(Constants.PET_FLT_WEIGHT, 2.5f);
+
+		// now also do the get request on the values
+		Map<String, String> restParams = new HashMap<String, String>();
+		restParams.put(Constants.PET_ID_PET, Long.toString(primaryKey));
+
+		Response doPutResponse = petServant.doPut(null, mockHttpSession, restParams, null);
+		assertEquals(200, doPutResponse.getStatus().getRequestStatus());
+		pet = PetFinder.findByPrimaryKey(primaryKey);
+		assertEquals("Fido-too", pet.getNmPet());
+		assertEquals("img-photo-too", pet.getImgPhoto());
+		assertEquals("2000-01-02", pet.getDtBirthday().toString());
+		assertEquals(new Integer(8), pet.getNumAge());
+		assertEquals(new Float(2.5), pet.getFltWeight());
+
+	}
+
+	@Test
+	public void testInvalidPut() {
+		Response doPutResponse = petServant.doPut(null, null, null, null);
+		assertEquals(NanoHTTPD.Response.Status.BAD_REQUEST.getRequestStatus(), doPutResponse.getStatus().getRequestStatus());
+
+		Map<String, String> restParams = new HashMap<String, String>();
+		restParams.put(Constants.PET_ID_PET, "-1");
+
+		doPutResponse = petServant.doPut(null, null, restParams, null);
+		assertEquals(NanoHTTPD.Response.Status.NOT_FOUND.getRequestStatus(), doPutResponse.getStatus().getRequestStatus());
+
+		restParams.put(Constants.PET_ID_PET, "this is not a number");
+
+		doPutResponse = petServant.doPut(null, null, restParams, null);
+		assertEquals(NanoHTTPD.Response.Status.BAD_REQUEST.getRequestStatus(), doPutResponse.getStatus().getRequestStatus());
+
 	}
 
 	@Test
@@ -135,11 +207,10 @@ public class PetServantTest {
 		Map<String, String> restParams = new HashMap<String, String>();
 		restParams.put(Constants.PET_ID_PET, "this cannot be a number");
 		Response doDeleteResponse = petServant.doDelete(null, null, restParams, null);
-		System.out.println(Helper.readResponse(doDeleteResponse));
 		assertEquals(NanoHTTPD.Response.Status.BAD_REQUEST.getRequestStatus(), doDeleteResponse.getStatus().getRequestStatus());
 	}
 
-	
+
 	@Test
 	public void doNullPost() {
 		Response doPostResponse = petServant.doPost(null, null, null, null);
