@@ -31,10 +31,6 @@ repositories {
 	jcenter()
 }
 
-configurations {
-	shadowRuntime
-}
-
 dependencies {
 	runtime 'synapticloop:h2zero:2.2.0'
 	runtime 'synapticloop:routemaster:2.2.1'
@@ -57,8 +53,9 @@ configurations.all {
 	resolutionStrategy {
 		failOnVersionConflict()
 		force 'junit:junit:4.11',
-					'org.json:json:20180130',
+					'synapticloop:templar:1.4.4',
 					'org.slf4j:slf4j-api:1.7.25',
+					'org.json:json:20180130',
 					'commons-logging:commons-logging:1.2',
 					'commons-collections:commons-collections:3.2.2',
 					'com.github.stefanbirkner:system-rules:1.17.1'
@@ -167,24 +164,8 @@ github {
 	]
 }
 
-pluginBundle {
-
-	website = 'https://github.com/synapticloop/h2zero'
-	vcsUrl = 'https://github.com/synapticloop/h2zero'
-	description = 'lightweight ORM generator for mysql, java and optionally jsp/servlets - this utilises the templar templating language'
-	tags = [ 'h2zero', 'ORM', 'generator' ]
-
-	plugins {
-		h2zeroPlugin {
-			id = 'synapticloop.h2zero'
-			displayName = 'Synapticloop Gradle h2zero plugin'
-		}
-	}
-}
-
 copyrightr {
 	excludes [
-		"src/test/java/synapticloop/sample/h2zero/**/*.*"
 	]
 	dryRun = false
 }
