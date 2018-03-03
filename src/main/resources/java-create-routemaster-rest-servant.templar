@@ -100,7 +100,6 @@ public class {table.javaClassName}Servant extends BaseServant {{{\n}
 {if table.isConstant}
 	{\t}{\t}// This is a constant table and cannot be altered{\n}
 	{\t}{\t}return(HttpUtils.forbiddenResponse());{\n}
-	}
 {else}
 	{\t}{\t}if(null != restParams) {{{\n}
 	{\t}{\t}{\t}String primaryKeyString = restParams.get(Constants.{table.upperName}_{table.primaryKey.upperName});{\n}

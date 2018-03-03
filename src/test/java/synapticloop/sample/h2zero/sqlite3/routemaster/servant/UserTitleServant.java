@@ -79,6 +79,6 @@ public class UserTitleServant extends BaseServant {
 	public Response doDelete(File rootDir, IHTTPSession httpSession, Map<String, String> restParams, String unmappedParams) {
 		// This is a constant table and cannot be altered
 		return(HttpUtils.forbiddenResponse());
-}	}
+	}
 
 }
