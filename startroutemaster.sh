@@ -2,8 +2,8 @@
 
 # time to create the routemaster properties file
 
-gradle -b build.h2zero.sqlite3.gradle clean h2zero
-gradle build shadow pTML
+gradle build shadow pTML; gradle -b build.h2zero.sqlite3.gradle h2zero
+
 
 cat routemaster.orig.properties > routemaster.properties
 cat src/test/resources/routemaster.rest.properties >> routemaster.properties

@@ -40,6 +40,12 @@ dependencies {
 	compile 'synapticloop:h2zero:2.2.1'
 	compile 'synapticloop:routemaster:2.3.0'
 
+	shadow 'mysql:mysql-connector-java:6.0.6'
+	shadow 'org.xerial:sqlite-jdbc:3.21.0.1'
+	shadow 'commons-io:commons-io:2.5'
+	shadow 'synapticloop:h2zero:2.2.1'
+	shadow 'synapticloop:routemaster:2.3.0'
+
 	testRuntime 'junit:junit:4.12'
 	testRuntime 'org.mockito:mockito-all:1.10.19'
 	testRuntime 'com.github.stefanbirkner:system-rules:1.16.1'
@@ -123,7 +129,9 @@ shadowJar {
 	baseName = 'routemaster-rest-testing'
 	version = ""
 	from sourceSets.test.output
-	configurations = [project.configurations.runtime]
+	from 'src/test/resources/test'
+	configurations = [project.configurations.shadow]
+	mergeServiceFiles()
 
 	manifest {
 		attributes(

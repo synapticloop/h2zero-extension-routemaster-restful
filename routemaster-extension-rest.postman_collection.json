@@ -1,0 +1,87 @@
+{
+	"info": {
+		"name": "routemaster-extension-rest",
+		"_postman_id": "8a5762cf-145f-49ca-8bff-faad1a262ef8",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://localhost:5474/rest/user_type/",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0d4529f0-52f7-40c0-8130-5e1f728a8ed2",
+						"type": "text/javascript",
+						"exec": [
+							"// example using pm.response.to.have",
+							"pm.test(\"response is not ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:5474/rest/user_type/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5474",
+					"path": [
+						"rest",
+						"user_type",
+						""
+					]
+				},
+				"description": "Test that we get back a response from the constant table"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:5474/rest/pet/asdlkjaslkj/",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "adcbb0ac-f61f-457a-b760-cde41c83c6c5",
+						"type": "text/javascript",
+						"exec": [
+							"// example using pm.response.to.have",
+							"pm.test(\"response is bad request\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:5474/rest/pet/asdlkjaslkj/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5474",
+					"path": [
+						"rest",
+						"pet",
+						"asdlkjaslkj",
+						""
+					]
+				},
+				"description": "Test that we get a bad request when we cannot parse the primary key"
+			},
+			"response": []
+		}
+	]
+}

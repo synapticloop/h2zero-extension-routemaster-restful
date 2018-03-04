@@ -112,14 +112,6 @@ public class PetServantTest {
 
 		Response doGetResponse = petServant.doGet(null, null, restParams, null);
 		assertEquals(200, doGetResponse.getStatus().getRequestStatus());
-		try {
-			inputStream = doGetResponse.getData();
-			String source = IOUtils.toString(inputStream, "UTF-8");
-			// test that this is parse-able
-			jsonObject = new JSONObject(source);
-		} finally {
-			IOUtils.closeQuietly(inputStream);
-		}
 	}
 
 	@Test

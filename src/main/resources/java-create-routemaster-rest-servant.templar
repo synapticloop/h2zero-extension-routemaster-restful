@@ -5,8 +5,9 @@ package {database.package}.routemaster.servant;{\n}
 //        (java-create-routemaster-rest-servant.templar){\n}
 {\n}
 import java.io.File;{\n}
+import java.io.IOException;{\n}
 import java.sql.SQLException;{\n}
-{\n}
+import java.util.HashMap;{\n}
 import java.util.List;{\n}
 import java.sql.Date;{\n}
 import java.sql.Timestamp;{\n}
@@ -37,7 +38,7 @@ public class {table.javaClassName}Servant extends BaseServant {{{\n}
 {\n}
 {\t}{\t}if(null != restParams) {{{\n}
 {\t}{\t}{\t}String primaryKeyString = restParams.get(Constants.{table.upperName}_{table.primaryKey.upperName});{\n}
-{\t}{\t}{\t}if(null != primaryKeyString) {{{\n}
+{\t}{\t}{\t}if(null != primaryKeyString && primaryKeyString.trim().length() != 0) {{{\n}
 {\t}{\t}{\t}{\t}try {{{\n}
 {\t}{\t}{\t}{\t}{\t}Long primaryKey = Long.parseLong(primaryKeyString);{\n}
 {\t}{\t}{\t}{\t}{\t}{table.javaClassName} {table.javaFieldName} = {table.javaClassName}Finder.findByPrimaryKey(primaryKey);{\n}
@@ -80,7 +81,16 @@ public class {table.javaClassName}Servant extends BaseServant {{{\n}
 	{\t}{\t}if(null == httpSession) {{{\n}
 	{\t}{\t}{\t}return(HttpUtils.badRequestResponse());{\n}
 	{\t}{\t}}{\n}
+
 	{\n}
+	{\t}{\t}Map<String, String> files = new HashMap<String, String>();{\n}
+	{\t}{\t}try {{{\n}
+	{\t}{\t}{\t}httpSession.parseBody(files);{\n}
+	{\t}{\t}} catch (IOException | ResponseException ex) {{{\n}
+	{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString("Exception, message was: " + ex.getMessage())));{\n}
+	{\t}{\t}}{\n}
+	{\n}
+
 	{\t}{\t}Map<String, List<String>> parameters = httpSession.getParameters();{\n}
 	{\n}
 	{\t}{\t}if(null == parameters) {{{\n}
@@ -137,6 +147,15 @@ public class {table.javaClassName}Servant extends BaseServant {{{\n}
 	{\t}{\t}{\t}}{\n}
 	{\t}{\t}} else {{{\n}
 	{\t}{\t}{\t}return(HttpUtils.badRequestResponse(APPLICATION_JSON, getErrorObjectAsString("Invalid route")));{\n}
+	{\t}{\t}}{\n}
+	{\n}
+
+	{\n}
+	{\t}{\t}Map<String, String> files = new HashMap<String, String>();{\n}
+	{\t}{\t}try {{{\n}
+	{\t}{\t}{\t}httpSession.parseBody(files);{\n}
+	{\t}{\t}} catch (IOException | ResponseException ex) {{{\n}
+	{\t}{\t}{\t}return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString("Exception, message was: " + ex.getMessage())));{\n}
 	{\t}{\t}}{\n}
 	{\n}
 

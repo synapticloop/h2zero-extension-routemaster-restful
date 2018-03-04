@@ -35,7 +35,7 @@ public class UserPetServant extends BaseServant {
 
 		if(null != restParams) {
 			String primaryKeyString = restParams.get(Constants.USER_PET_ID_USER_PET);
-			if(null != primaryKeyString) {
+			if(null != primaryKeyString && primaryKeyString.trim().length() != 0) {
 				try {
 					Long primaryKey = Long.parseLong(primaryKeyString);
 					UserPet userPet = UserPetFinder.findByPrimaryKey(primaryKey);
@@ -73,6 +73,13 @@ public class UserPetServant extends BaseServant {
 	public Response doPost(File rootDir, IHTTPSession httpSession, Map<String, String> restParams, String unmappedParams) {
 		if(null == httpSession) {
 			return(HttpUtils.badRequestResponse());
+		}
+
+		Map<String, String> files = new HashMap<String, String>();
+		try {
+			httpSession.parseBody(files);
+		} catch (IOException | ResponseException ex) {
+			return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString("Exception, message was: " + ex.getMessage())));
 		}
 
 		Map<String, List<String>> parameters = httpSession.getParameters();
@@ -116,6 +123,14 @@ public class UserPetServant extends BaseServant {
 			}
 		} else {
 			return(HttpUtils.badRequestResponse(APPLICATION_JSON, getErrorObjectAsString("Invalid route")));
+		}
+
+
+		Map<String, String> files = new HashMap<String, String>();
+		try {
+			httpSession.parseBody(files);
+		} catch (IOException | ResponseException ex) {
+			return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString("Exception, message was: " + ex.getMessage())));
 		}
 
 		Map<String, List<String>> parameters = httpSession.getParameters();

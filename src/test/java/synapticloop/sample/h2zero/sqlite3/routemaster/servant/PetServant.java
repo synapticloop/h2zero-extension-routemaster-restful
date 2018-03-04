@@ -5,8 +5,9 @@ package synapticloop.sample.h2zero.sqlite3.routemaster.servant;
 //        (java-create-routemaster-rest-servant.templar)
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
-
+import java.util.HashMap;
 import java.util.List;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
+import fi.iki.elonen.NanoHTTPD.ResponseException;
 import synapticloop.h2zero.base.exception.H2ZeroFinderException;
 import synapticloop.h2zero.base.exception.H2ZeroPrimaryKeyException;
 import synapticloop.nanohttpd.utils.HttpUtils;
@@ -35,7 +37,7 @@ public class PetServant extends BaseServant {
 
 		if(null != restParams) {
 			String primaryKeyString = restParams.get(Constants.PET_ID_PET);
-			if(null != primaryKeyString) {
+			if(null != primaryKeyString && primaryKeyString.trim().length() != 0) {
 				try {
 					Long primaryKey = Long.parseLong(primaryKeyString);
 					Pet pet = PetFinder.findByPrimaryKey(primaryKey);
@@ -73,6 +75,13 @@ public class PetServant extends BaseServant {
 	public Response doPost(File rootDir, IHTTPSession httpSession, Map<String, String> restParams, String unmappedParams) {
 		if(null == httpSession) {
 			return(HttpUtils.badRequestResponse());
+		}
+
+		Map<String, String> files = new HashMap<String, String>();
+		try {
+			httpSession.parseBody(files);
+		} catch (IOException | ResponseException ex) {
+			return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString("Exception, message was: " + ex.getMessage())));
 		}
 
 		Map<String, List<String>> parameters = httpSession.getParameters();
@@ -119,6 +128,14 @@ public class PetServant extends BaseServant {
 			}
 		} else {
 			return(HttpUtils.badRequestResponse(APPLICATION_JSON, getErrorObjectAsString("Invalid route")));
+		}
+
+
+		Map<String, String> files = new HashMap<String, String>();
+		try {
+			httpSession.parseBody(files);
+		} catch (IOException | ResponseException ex) {
+			return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString("Exception, message was: " + ex.getMessage())));
 		}
 
 		Map<String, List<String>> parameters = httpSession.getParameters();

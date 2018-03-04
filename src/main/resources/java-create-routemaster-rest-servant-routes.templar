@@ -5,7 +5,6 @@
 	{loop table.fields as field}
 		{if field.primary}
 			rest./rest/{table.name}/%{field.javaName}%/={database.package}.routemaster.servant.{table.JavaClassName}Servant{\n}
-			rest./rest/{table.name}/={database.package}.routemaster.servant.{table.JavaClassName}Servant{\n}
 		{endif}
 	{endloop}
 {endloop}

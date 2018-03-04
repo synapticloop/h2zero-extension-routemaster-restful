@@ -35,7 +35,7 @@ public class UserServant extends BaseServant {
 
 		if(null != restParams) {
 			String primaryKeyString = restParams.get(Constants.USER_ID_USER);
-			if(null != primaryKeyString) {
+			if(null != primaryKeyString && primaryKeyString.trim().length() != 0) {
 				try {
 					Long primaryKey = Long.parseLong(primaryKeyString);
 					User user = UserFinder.findByPrimaryKey(primaryKey);
@@ -73,6 +73,13 @@ public class UserServant extends BaseServant {
 	public Response doPost(File rootDir, IHTTPSession httpSession, Map<String, String> restParams, String unmappedParams) {
 		if(null == httpSession) {
 			return(HttpUtils.badRequestResponse());
+		}
+
+		Map<String, String> files = new HashMap<String, String>();
+		try {
+			httpSession.parseBody(files);
+		} catch (IOException | ResponseException ex) {
+			return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString("Exception, message was: " + ex.getMessage())));
 		}
 
 		Map<String, List<String>> parameters = httpSession.getParameters();
@@ -121,6 +128,14 @@ public class UserServant extends BaseServant {
 			}
 		} else {
 			return(HttpUtils.badRequestResponse(APPLICATION_JSON, getErrorObjectAsString("Invalid route")));
+		}
+
+
+		Map<String, String> files = new HashMap<String, String>();
+		try {
+			httpSession.parseBody(files);
+		} catch (IOException | ResponseException ex) {
+			return(HttpUtils.internalServerErrorResponse(APPLICATION_JSON, getErrorObjectAsString("Exception, message was: " + ex.getMessage())));
 		}
 
 		Map<String, List<String>> parameters = httpSession.getParameters();

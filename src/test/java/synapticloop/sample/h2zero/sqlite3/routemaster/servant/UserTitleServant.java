@@ -34,7 +34,7 @@ public class UserTitleServant extends BaseServant {
 
 		if(null != restParams) {
 			String primaryKeyString = restParams.get(Constants.USER_TITLE_ID_USER_TITLE);
-			if(null != primaryKeyString) {
+			if(null != primaryKeyString && primaryKeyString.trim().length() != 0) {
 				try {
 					Long primaryKey = Long.parseLong(primaryKeyString);
 					UserTitle userTitle = UserTitleFinder.findByPrimaryKey(primaryKey);

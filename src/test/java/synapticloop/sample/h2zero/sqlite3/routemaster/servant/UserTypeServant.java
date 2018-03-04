@@ -34,7 +34,7 @@ public class UserTypeServant extends BaseServant {
 
 		if(null != restParams) {
 			String primaryKeyString = restParams.get(Constants.USER_TYPE_ID_USER_TYPE);
-			if(null != primaryKeyString) {
+			if(null != primaryKeyString && primaryKeyString.trim().length() != 0) {
 				try {
 					Long primaryKey = Long.parseLong(primaryKeyString);
 					UserType userType = UserTypeFinder.findByPrimaryKey(primaryKey);
