@@ -28,14 +28,14 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "http://localhost:5474/rest/user_type/",
+					"raw": "http://localhost:5474/extension/user_type/",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "5474",
 					"path": [
-						"rest",
+						"extension",
 						"user_type",
 						""
 					]
@@ -66,20 +66,70 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "http://localhost:5474/rest/pet/asdlkjaslkj/",
+					"raw": "http://localhost:5474/extension/pet/asdlkjaslkj/",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "5474",
 					"path": [
-						"rest",
+						"extension",
 						"pet",
 						"asdlkjaslkj",
 						""
 					]
 				},
 				"description": "Test that we get a bad request when we cannot parse the primary key"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:5474/rest/pet/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "nmPet",
+							"value": "POST-pet",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "numAge",
+							"value": "8",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "fltWeight",
+							"value": "2.3",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:5474/extension/pet/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5474",
+					"path": [
+						"extension",
+						"pet",
+						""
+					]
+				},
+				"description": "Add a new pet to the database"
 			},
 			"response": []
 		}
