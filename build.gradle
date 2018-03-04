@@ -20,7 +20,7 @@ plugins {
 group = 'synapticloop'
 archivesBaseName = 'h2zero-extension-routemaster-restful'
 description = """Routemaster extension for h2zero to generate restful services"""
-version = '0.0.1'
+version = '1.0.0'
 
 tasks.withType(Javadoc).all { enabled = false }
 

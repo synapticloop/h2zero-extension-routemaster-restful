@@ -9,6 +9,10 @@
 	"extensions" : [
 		"synapticloop.h2zero.extension.routemaster.RoutemasterRestfulServletExtension"
 	],
+	
+	"synapticloop.h2zero.extension.routemaster.RoutemasterRestfulServletExtension": {
+		"pathPrefix": "extension"
+	},
 
 	"validators": {
 		"UpdaterNameValidator": {
