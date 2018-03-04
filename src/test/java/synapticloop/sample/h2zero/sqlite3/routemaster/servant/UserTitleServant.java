@@ -5,8 +5,9 @@ package synapticloop.sample.h2zero.sqlite3.routemaster.servant;
 //        (java-create-routemaster-rest-servant.templar)
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
-
+import java.util.HashMap;
 import java.util.List;
 import java.sql.Date;
 import java.sql.Timestamp;
