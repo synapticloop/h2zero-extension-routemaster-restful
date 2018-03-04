@@ -13,3 +13,7 @@ java -jar routemaster-rest-testing.jar \
      -p 5474 \
      -d . \
      -q false
+
+rm src/test/sqlite-db/h2zero.sqlite3.db
+
+echo ".read src/test/resources/create-database-sqlite3.sql" | sqlite3 src/test/sqlite-db/h2zero.sqlite3.db

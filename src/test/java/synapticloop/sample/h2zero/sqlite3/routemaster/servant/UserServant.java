@@ -15,6 +15,7 @@ import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
+import fi.iki.elonen.NanoHTTPD.ResponseException;
 import synapticloop.h2zero.base.exception.H2ZeroFinderException;
 import synapticloop.h2zero.base.exception.H2ZeroPrimaryKeyException;
 import synapticloop.nanohttpd.utils.HttpUtils;
