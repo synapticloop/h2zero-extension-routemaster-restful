@@ -7,6 +7,8 @@ plugins {
 	id "com.github.ben-manes.versions" version "0.17.0"
 	id "com.jfrog.bintray" version "1.8.0"
 
+	id "com.github.johnrengelman.shadow" version "2.0.2"
+
 	id 'com.gradle.plugin-publish' version '0.9.10'
 	id 'co.riiid.gradle' version '0.4.2'
 	id 'net.saliman.cobertura' version '2.5.4'
@@ -114,6 +116,24 @@ task sourcesJar(type: Jar) {
 	from sourceSets.main.allSource
 	classifier = 'sources'
 }
+
+shadowJar {
+	classifier = ""
+	destinationDir = new File(".")
+	baseName = 'routemaster-rest-testing'
+	version = ""
+	from sourceSets.test.output
+	configurations = [project.configurations.runtime]
+
+	manifest {
+		attributes(
+			"Main-Class": "synapticloop.nanohttpd.RouteMasterServer",
+			"Implementation-Version": version
+		)
+	}
+
+}
+
 
 test.finalizedBy(project.tasks.cobertura)
 
