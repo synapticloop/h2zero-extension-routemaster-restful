@@ -16,10 +16,21 @@
 		{ "type":"file", "value":"src/docs/overview.md" },
 
 		{ "type":"markup", "value":"\n\n```\n" },
+		{ "type":"file", "value":"src/test/resources/sample-include-sqlite3.h2zero" },
+		{ "type":"markup", "value":"\n\n```\n" },
+
+		{ "type":"file", "value":"src/docs/example.md" },
+
+		{ "type":"markup", "value":"\n\n```\n" },
 		{ "type":"file", "value":"src/main/java/synapticloop/h2zero/extension/routemaster/RoutemasterRestfulServletExtension.java" },
-		{ "type":"markup", "value":"\n\n```\n'" },
+		{ "type":"markup", "value":"\n\n```\n" },
+
+		{ "type":"file", "value":"src/docs/things-to-note.md" },
 
 		{ "type":"inbuilt", "value":"gradle-build" },
+
+		{ "type":"file", "value":"src/docs/how-to-test.md" },
+
 		{ "type":"inbuilt", "value":"gradle-test" },
 
 		{ "type":"inbuilt", "value":"dependencies" },

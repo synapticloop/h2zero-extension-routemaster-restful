@@ -50,7 +50,7 @@ public class RoutemasterRestfulServletExtension extends Extension {
 		writeRestServants(database, options, outFile, verbose, templarContext);
 
 		// write out the routemaster routes file
-		writeRestServantRoutes(extensionOptions, database, options, outFile, verbose, templarContext);
+		writeRestServantRoutes(database, options, outFile, verbose, templarContext);
 	}
 
 	/**
@@ -110,7 +110,6 @@ public class RoutemasterRestfulServletExtension extends Extension {
 	/**
 	 * Write out the example routes for the RESTful interface
 	 * 
-	 * @param extensionOptions The extension options that are passed through from the h2zero file
 	 * @param database The h2zero database model
 	 * @param options The h2zero options
 	 * @param outFile The base directory
@@ -120,12 +119,9 @@ public class RoutemasterRestfulServletExtension extends Extension {
 	 * @throws ParseException If there was an error parsing the templar template
 	 * @throws RenderException If there was an error rendering the file
 	 */
-	private void writeRestServantRoutes(JSONObject extensionOptions, Database database, Options options, File outFile, boolean verbose, TemplarContext templarContext) throws ParseException, RenderException {
+	private void writeRestServantRoutes(Database database, Options options, File outFile, boolean verbose, TemplarContext templarContext) throws ParseException, RenderException {
 		// get the templar parser
 		Parser baseRestServantTemplarParser = getParser("/java-create-routemaster-rest-servant-routes.templar", verbose);
-
-		// add the extensionOptions to the templar context so that they can be picked up
-		templarContext.add("extensionOptions", extensionOptions);
 
 		// render to the file
 		String pathname = outFile + options.getOutputSql() + "routemaster.rest.properties";

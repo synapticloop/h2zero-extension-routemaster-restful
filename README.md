@@ -29,15 +29,25 @@
  - [h2zero-extension-routemaster-restful](#documentr_heading_0)
  - [Table of Contents](#documentr_heading_1)
  - [Overview](#documentr_heading_2)
- - [Building the Package](#documentr_heading_3)
-   - [*NIX/Mac OS X](#documentr_heading_4)
-   - [Windows](#documentr_heading_5)
- - [Running the Tests](#documentr_heading_6)
-   - [*NIX/Mac OS X](#documentr_heading_7)
-   - [Windows](#documentr_heading_8)
-   - [Dependencies - Gradle](#documentr_heading_9)
-   - [Dependencies - Maven](#documentr_heading_10)
-   - [Dependencies - Downloads](#documentr_heading_11)
+   - [What you need to do](#documentr_heading_3)
+   - [The h2zero configuration file](#documentr_heading_4)
+   - [A simple (ish) example](#documentr_heading_5)
+   - [Things to note from the above](#documentr_heading_6)
+ - [A simple (ish) example](#documentr_heading_7)
+ - [Things to note](#documentr_heading_8)
+   - [Always get the default context](#documentr_heading_9)
+   - [Get the parser](#documentr_heading_10)
+   - [Render](#documentr_heading_11)
+ - [Building the Package](#documentr_heading_12)
+   - [*NIX/Mac OS X](#documentr_heading_13)
+   - [Windows](#documentr_heading_14)
+ - [How to test](#documentr_heading_15)
+ - [Running the Tests](#documentr_heading_16)
+   - [*NIX/Mac OS X](#documentr_heading_17)
+   - [Windows](#documentr_heading_18)
+   - [Dependencies - Gradle](#documentr_heading_19)
+   - [Dependencies - Maven](#documentr_heading_20)
+   - [Dependencies - Downloads](#documentr_heading_21)
 
 
 
@@ -48,8 +58,129 @@
 
 # Overview <sup><sup>[top](documentr_top)</sup></sup>
 
-
 This project is an extension to `h2zero` that generates a restful interface to the database (GET, POST, PUT, DELETE).  
+
+
+
+<a name="documentr_heading_3"></a>
+
+## What you need to do <sup><sup>[top](documentr_top)</sup></sup>
+
+  1. Create an extension class that `extends` `synapticloop.h2zero.extension.Extension`
+  1. Implement the `public void generate(JSONObject extensionOptions, Database database, Options options, File outFile, boolean verbose) throws RenderException, ParseException;` method
+  1. Set-up the h2zero file:
+  1. Away you go
+
+
+
+<a name="documentr_heading_4"></a>
+
+## The h2zero configuration file <sup><sup>[top](documentr_top)</sup></sup>
+
+see the `src/test/resources/sample-include-sqlite3.h2zero` file for a configuration example below
+
+
+
+
+<a name="documentr_heading_5"></a>
+
+## A simple (ish) example <sup><sup>[top](documentr_top)</sup></sup>
+
+The main class entry point is the `RoutemasterRestfulServletExtension.java`
+
+
+
+```
+{
+"options": {
+	"metrics": false,
+	"database": "sqlite3",
+
+	"generators": [ "java", "sql", "reports" ],
+
+	"extensions" : [
+		"synapticloop.h2zero.extension.routemaster.RoutemasterRestfulServletExtension"
+	],
+	
+	"synapticloop.h2zero.extension.routemaster.RoutemasterRestfulServletExtension": {
+		"pathPrefix": "extension"
+	},
+
+	"validators": {
+		"UpdaterNameValidator": {
+			"allowablePrefixes": "reset,"
+		},
+
+		"FinderNameValidator": {
+			"allowablePrefixes": "find,calculate"
+		}
+	},
+
+	"output": {
+		"java": "src/test/java/",
+		"sql": "src/test/resources/",
+		"webapp": "src/test/resources/"
+	}
+},
+
+"database": {
+	"schema": "sample",
+	"package": "synapticloop.sample.h2zero.sqlite3",
+	"defaultStatementCacheSize": 1024,
+
+	"tables": [
+		{ "include": "./user_type.json" },
+		{ "include": "./user_title.json" },
+		{ "include": "./user.json" },
+		{ "include": "./pet.sqlite3.json" },
+		{ "include": "./user_pet.json" }
+	],
+}
+}
+
+```
+
+
+
+
+
+<a name="documentr_heading_6"></a>
+
+## Things to note from the above <sup><sup>[top](documentr_top)</sup></sup>
+
+
+
+```
+  "options:{
+  
+  ...
+  
+  
+    "extensions" : [
+        "synapticloop.h2zero.extension.routemaster.RoutemasterRestfulServletExtension"
+    ],
+    
+    "synapticloop.h2zero.extension.routemaster.RoutemasterRestfulServletExtension": {
+        "pathPrefix": "extension"
+    },
+    
+  ...
+  
+  }
+```
+
+
+
+Extension are placed in the String JSON Array with the `extensions` key.  For any 
+other options or configuration that is required by the extension, place another 
+JSON object within the `options` object key on the class name that the extension 
+uses.
+
+
+
+<a name="documentr_heading_7"></a>
+
+# A simple (ish) example <sup><sup>[top](documentr_top)</sup></sup>
 
 The main class entry point is the `RoutemasterRestfulServletExtension.java`
 
@@ -108,7 +239,7 @@ public class RoutemasterRestfulServletExtension extends Extension {
 		writeRestServants(database, options, outFile, verbose, templarContext);
 
 		// write out the routemaster routes file
-		writeRestServantRoutes(extensionOptions, database, options, outFile, verbose, templarContext);
+		writeRestServantRoutes(database, options, outFile, verbose, templarContext);
 	}
 
 	/**
@@ -168,7 +299,6 @@ public class RoutemasterRestfulServletExtension extends Extension {
 	/**
 	 * Write out the example routes for the RESTful interface
 	 * 
-	 * @param extensionOptions The extension options that are passed through from the h2zero file
 	 * @param database The h2zero database model
 	 * @param options The h2zero options
 	 * @param outFile The base directory
@@ -178,12 +308,9 @@ public class RoutemasterRestfulServletExtension extends Extension {
 	 * @throws ParseException If there was an error parsing the templar template
 	 * @throws RenderException If there was an error rendering the file
 	 */
-	private void writeRestServantRoutes(JSONObject extensionOptions, Database database, Options options, File outFile, boolean verbose, TemplarContext templarContext) throws ParseException, RenderException {
+	private void writeRestServantRoutes(Database database, Options options, File outFile, boolean verbose, TemplarContext templarContext) throws ParseException, RenderException {
 		// get the templar parser
 		Parser baseRestServantTemplarParser = getParser("/java-create-routemaster-rest-servant-routes.templar", verbose);
-
-		// add the extensionOptions to the templar context so that they can be picked up
-		templarContext.add("extensionOptions", extensionOptions);
 
 		// render to the file
 		String pathname = outFile + options.getOutputSql() + "routemaster.rest.properties";
@@ -198,17 +325,71 @@ public class RoutemasterRestfulServletExtension extends Extension {
 ```
 
 
-'
 
 
 
-<a name="documentr_heading_3"></a>
+
+<a name="documentr_heading_8"></a>
+
+# Things to note <sup><sup>[top](documentr_top)</sup></sup>
+
+Looking at the above class, it is relatively straight-forward to generate 
+multiple files.  Below is a list of things to note:
+
+
+
+<a name="documentr_heading_9"></a>
+
+## Always get the default context <sup><sup>[top](documentr_top)</sup></sup>
+
+
+
+```
+        // you __ALWAYS__ want to get the defaultTemplarContext.
+        TemplarContext templarContext = getDefaultTemplarContext(extensionOptions, database, options);
+```
+
+
+
+This will set everything up, and place the following things into the context.
+
+
+
+```
+		TemplarContext templarContext = new TemplarContext(templarConfiguration);
+		templarContext.add(JSONKeyConstants.DATABASE, database);                    // key is "database"
+		templarContext.add(JSONKeyConstants.OPTIONS, options);                      // key is "options"
+		templarContext.add(JSONKeyConstants.EXTENSION_OPTIONS, extensionOptions);   // key is "extensionOptions"
+```
+
+
+
+
+
+<a name="documentr_heading_10"></a>
+
+## Get the parser <sup><sup>[top](documentr_top)</sup></sup>
+
+Use the `getParser("/classpath/to/template.templar", verbose)` method which will set up the parser for you.
+
+
+
+<a name="documentr_heading_11"></a>
+
+## Render <sup><sup>[top](documentr_top)</sup></sup>
+
+Use the `renderToFile(templarContext, templarParserFile, "output/path/file.name", verbose);` which will also 
+add the output to the summary statistics.
+
+
+
+<a name="documentr_heading_12"></a>
 
 # Building the Package <sup><sup>[top](documentr_top)</sup></sup>
 
 
 
-<a name="documentr_heading_4"></a>
+<a name="documentr_heading_13"></a>
 
 ## *NIX/Mac OS X <sup><sup>[top](documentr_top)</sup></sup>
 
@@ -219,7 +400,7 @@ From the root of the project, simply run
 
 
 
-<a name="documentr_heading_5"></a>
+<a name="documentr_heading_14"></a>
 
 ## Windows <sup><sup>[top](documentr_top)</sup></sup>
 
@@ -232,13 +413,38 @@ Note that this may also run tests (if applicable see the Testing notes)
 
 
 
-<a name="documentr_heading_6"></a>
+
+<a name="documentr_heading_15"></a>
+
+# How to test <sup><sup>[top](documentr_top)</sup></sup>
+
+As the extension will generate additional code for the project, there is a 
+slight roundabout way of testing the code.
+
+  1. build the code and publish it to maven local
+  1. have a separate build.gradle file that will reference the class path (including maven local repository)
+
+The simplest way is to:
+
+`gradle build -x test`
+
+then
+
+`gradle -b build.h2zero.sqlite3.gradle h2zero`
+
+or more simply (for *NIX machines)
+
+`gradle build -x test; gradle -b build.h2zero.sqlite3.gradle h2zero`
+
+
+
+<a name="documentr_heading_16"></a>
 
 # Running the Tests <sup><sup>[top](documentr_top)</sup></sup>
 
 
 
-<a name="documentr_heading_7"></a>
+<a name="documentr_heading_17"></a>
 
 ## *NIX/Mac OS X <sup><sup>[top](documentr_top)</sup></sup>
 
@@ -252,7 +458,7 @@ if you do not have gradle installed, try:
 
 
 
-<a name="documentr_heading_8"></a>
+<a name="documentr_heading_18"></a>
 
 ## Windows <sup><sup>[top](documentr_top)</sup></sup>
 
@@ -269,7 +475,7 @@ The `--info` switch will also output logging for the tests
 
 
 
-<a name="documentr_heading_9"></a>
+<a name="documentr_heading_19"></a>
 
 ## Dependencies - Gradle <sup><sup>[top](documentr_top)</sup></sup>
 
@@ -301,7 +507,7 @@ dependencies {
 
 
 
-<a name="documentr_heading_10"></a>
+<a name="documentr_heading_20"></a>
 
 ## Dependencies - Maven <sup><sup>[top](documentr_top)</sup></sup>
 
@@ -320,7 +526,7 @@ dependencies {
 
 
 
-<a name="documentr_heading_11"></a>
+<a name="documentr_heading_21"></a>
 
 ## Dependencies - Downloads <sup><sup>[top](documentr_top)</sup></sup>
 
