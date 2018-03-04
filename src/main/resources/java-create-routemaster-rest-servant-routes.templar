@@ -4,8 +4,8 @@
 	# This is the rest routable servant for the '{table.JavaClassName}' database table{\n}
 	{loop table.fields as field}
 		{if field.primary}
-			rest./rest/%{field.javaName}%/={database.package}.routemaster.servant.{table.JavaClassName}Servant{\n}
-			rest./rest/={database.package}.routemaster.servant.{table.JavaClassName}Servant{\n}
+			rest./rest/{table.name}/%{field.javaName}%/={database.package}.routemaster.servant.{table.JavaClassName}Servant{\n}
+			rest./rest/{table.name}/={database.package}.routemaster.servant.{table.JavaClassName}Servant{\n}
 		{endif}
 	{endloop}
 {endloop}
