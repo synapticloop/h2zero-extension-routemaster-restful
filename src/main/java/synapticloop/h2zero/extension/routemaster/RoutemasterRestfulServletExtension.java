@@ -19,6 +19,7 @@ package synapticloop.h2zero.extension.routemaster;
  */
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -27,6 +28,7 @@ import synapticloop.h2zero.extension.Extension;
 import synapticloop.h2zero.model.Database;
 import synapticloop.h2zero.model.Options;
 import synapticloop.h2zero.model.Table;
+import synapticloop.h2zero.validator.BaseValidator;
 import synapticloop.templar.Parser;
 import synapticloop.templar.exception.ParseException;
 import synapticloop.templar.exception.RenderException;
@@ -71,7 +73,7 @@ public class RoutemasterRestfulServletExtension extends Extension {
 		Parser baseRestServantTemplarParser = getParser("/java-create-routemaster-base-rest-servant.templar", verbose);
 
 		// determine the file path
-		String pathname = outFile + options.getOutputJava() + database.getPackagePath() + "/routemaster/servant/BaseServant.java";
+		String pathname = outFile + options.getOutputCode() + database.getPackagePath() + "/routemaster/servant/BaseServant.java";
 
 		// render to the file
 		renderToFile(templarContext, baseRestServantTemplarParser, pathname, verbose);
@@ -100,7 +102,7 @@ public class RoutemasterRestfulServletExtension extends Extension {
 			templarContext.add("table", table);
 
 			// determine the file path
-			String pathname = outFile + options.getOutputJava() + database.getPackagePath() + "/routemaster/servant/" + table.getJavaClassName() + "Servant.java";
+			String pathname = outFile + options.getOutputCode() + database.getPackagePath() + "/routemaster/servant/" + table.getJavaClassName() + "Servant.java";
 
 			// render to the file
 			renderToFile(templarContext, restServantTemplarParser, pathname, verbose);
@@ -124,10 +126,15 @@ public class RoutemasterRestfulServletExtension extends Extension {
 		Parser baseRestServantTemplarParser = getParser("/java-create-routemaster-rest-servant-routes.templar", verbose);
 
 		// render to the file
-		String pathname = outFile + options.getOutputSql() + "routemaster.rest.properties";
+		String pathname = outFile + options.getOutputResources() + "routemaster.rest.properties";
 
 		// render to the file
 		renderToFile(templarContext, baseRestServantTemplarParser, pathname, verbose);
+	}
+
+	@Override
+	public List<BaseValidator> getValidators() {
+		return(new ArrayList<BaseValidator>());
 	}
 
 }

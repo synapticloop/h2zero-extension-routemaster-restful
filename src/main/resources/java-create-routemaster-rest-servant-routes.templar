@@ -9,7 +9,6 @@
 			{else}
 				rest./{extensionOptions.pathPrefix}/{table.name}/%{field.javaName}%/={database.package}.routemaster.servant.{table.JavaClassName}Servant{\n}
 			{endif}
-			}
 		{endif}
 	{endloop}
 {endloop}

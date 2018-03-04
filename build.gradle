@@ -20,7 +20,7 @@ plugins {
 group = 'synapticloop'
 archivesBaseName = 'h2zero-extension-routemaster-restful'
 description = """Routemaster extension for h2zero to generate restful services"""
-version = '1.0.0'
+version = '2.0.0'
 
 tasks.withType(Javadoc).all { enabled = false }
 
@@ -34,16 +34,16 @@ repositories {
 }
 
 dependencies {
-	runtime 'synapticloop:h2zero:2.2.1'
+	runtime 'synapticloop:h2zero:3.0.0'
 	runtime 'synapticloop:routemaster:2.3.0'
 
-	compile 'synapticloop:h2zero:2.2.1'
+	compile 'synapticloop:h2zero:3.0.0'
 	compile 'synapticloop:routemaster:2.3.0'
 
 	shadow 'mysql:mysql-connector-java:6.0.6'
 	shadow 'org.xerial:sqlite-jdbc:3.21.0.1'
 	shadow 'commons-io:commons-io:2.5'
-	shadow 'synapticloop:h2zero:2.2.1'
+	shadow 'synapticloop:h2zero:3.0.0'
 	shadow 'synapticloop:routemaster:2.3.0'
 
 	testRuntime 'junit:junit:4.12'
