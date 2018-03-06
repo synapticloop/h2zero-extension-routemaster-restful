@@ -2,7 +2,7 @@
 "options": {
 	"database": "mysql",
 	"metrics": false,
-	"generators": [ "java", "sql", "taglib", "reports" ],
+	"generators": [ "java", "sql", "reports" ],
 	"validators": {
 		"UpdaterNameValidator": {
 			"allowablePrefixes": "reset,"
@@ -29,5 +29,9 @@
 		{ "include": "./pet.json" },
 		{ "include": "./user_pet.json" }
 	],
+
+	"views": [
+		{ "include": "./view-pet.json" },
+	]
 }
 }

@@ -42,5 +42,9 @@
 		{ "include": "./pet.sqlite3.json" },
 		{ "include": "./user_pet.json" }
 	],
+
+	"views": [
+		{ "include": "./view-pet.json" },
+	]
 }
 }
