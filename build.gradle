@@ -43,7 +43,7 @@ dependencies {
 	shadow 'mysql:mysql-connector-java:6.0.6'
 	shadow 'org.xerial:sqlite-jdbc:3.21.0.1'
 	shadow 'commons-io:commons-io:2.5'
-	shadow 'synapticloop:h2zero:3.0.0'
+	shadow 'synapticloop:h2zero:3.1.0'
 	shadow 'synapticloop:routemaster:2.3.0'
 
 	testRuntime 'junit:junit:4.12'
